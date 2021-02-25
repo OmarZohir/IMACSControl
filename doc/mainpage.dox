@@ -1,0 +1,22 @@
+/**
+@mainpage IMACS
+
+@section imacs IMACS
+
+@section imacsVREP IMACS VREP Simulator
+
+@section imacsWEBOTS IMACS WEBOTS Simulator
+
+
+<!-- If you know plantUML and you have it installed (maybe adapt PLANTUML_JAR_PATH
+  in Doxyfile if it's not at `/usr/share/plantuml`) then you can use this:
+  @startuml
+  A -> B
+  @enduml
+
+  Otherwise you can include an image with this line:
+
+  ![Some image](doc/a.png)
+-->
+
+*/
