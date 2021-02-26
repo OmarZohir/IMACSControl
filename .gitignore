@@ -8,7 +8,8 @@ imacs_vrep
 imacs_webots
 
 #webots
-.wbproj
+*.wbproj
+
 # Prerequisites
 *.d
 

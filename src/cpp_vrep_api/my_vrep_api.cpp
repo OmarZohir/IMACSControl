@@ -73,7 +73,7 @@ vrepAPI::vrepAPI() : lkasModel(0.135L, 0.42L, 2.2L, 0.55L, 0.21L) {
     simxFinish(-1);  // end all running commnication threads [SD]
     m_clientID = simxStart((simxChar*)"127.0.0.1", 19997, true, true, 5000, 5);
     //assert(( "V-REP must be started", m_clientID != -1)); //[SD]
-    assert( m_clientID != -1 && "V-REP must be started: ./vrep.sh ../../vrep-scenes/EnterCurveTest.ttt");
+    assert( m_clientID != -1 && "V-REP must be started. If already open, STOP SIMULATION and wait for some time.");
     std::string timestamp = get_timestamp();
     cout << timestamp << " Connected to remote API server\n";
     simxSynchronous(m_clientID, true);							 							
