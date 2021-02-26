@@ -5,27 +5,40 @@
 #include "paths.hpp"
 #include "lkas_model.hpp"
 
+#define MAX_SCENARIOS 9 //!< maximum number of scenarios defined
+#define LENGTH_PHI_AUG 6 //!< length of the phi_aug matrix of the controller.
 /// @brief Class for lateral controller. The VREP simulator model is scaled down (10:1) for faster simulation, i.e. 10m in real world = 1m in simulator.
 class lateralControllerVREP : lkasModel {
 private:
     // member variables
     std::vector<long double> m_input = std::vector<long double> (400);
     long double m_desired_steering_angle;
-    std::vector< Eigen::Matrix<long double, 6, 6> > m_phi_aug
-                                    = std::vector< Eigen::Matrix<long double, 6, 6> > (9);
-    std::vector< Eigen::Matrix<long double, 6, 6> > m_T
-                                    = std::vector< Eigen::Matrix<long double, 6, 6> > (9);
-    std::vector< Eigen::Matrix<long double, 1, 5> > m_K2c
-                                    = std::vector< Eigen::Matrix<long double, 1, 5> > (9);
-    std::vector< Eigen::Matrix<long double, 6, 1> > m_Gamma_aug
-                                    = std::vector< Eigen::Matrix<long double, 6, 1> > (9);
+
+    /// Controller matrices. Note that the Matrix dimensions need to be changed depending on the type of controller and controller implementation choice.
+    std::vector< Eigen::Matrix<long double, LENGTH_PHI_AUG, LENGTH_PHI_AUG> > m_phi_aug
+                                        = std::vector< Eigen::Matrix<long double, LENGTH_PHI_AUG, LENGTH_PHI_AUG> > (MAX_SCENARIOS);
+    std::vector< Eigen::Matrix<long double, LENGTH_PHI_AUG, LENGTH_PHI_AUG> > m_T
+                                        = std::vector< Eigen::Matrix<long double, LENGTH_PHI_AUG, LENGTH_PHI_AUG> > (MAX_SCENARIOS);
+    std::vector< Eigen::Matrix<long double, 1, (LENGTH_PHI_AUG-1)> > m_K2c
+                                        = std::vector< Eigen::Matrix<long double, 1, (LENGTH_PHI_AUG-1)> > (MAX_SCENARIOS);
+    std::vector< Eigen::Matrix<long double, LENGTH_PHI_AUG, 1> > m_Gamma_aug
+                                        = std::vector< Eigen::Matrix<long double, LENGTH_PHI_AUG, 1> > (MAX_SCENARIOS);
 public:
+    // class public methods
+    void compute_steering_angle(long double the_yL, int the_it_counter, int scenario);
+    long double get_steering_angle();
+    void estimate_next_state(int the_it_counter, int the_pipe_version);
+    vector<float> period_s, tau_s;
     // constructor
     lateralControllerVREP() : lkasModel(0.135L, 0.42L, 2.2L, 0.55L, 0.21L){
         // initialize member variables
         fill(m_input.begin(), m_input.end(), 0.0L); // m_input is the input of the last sampling period.
         m_desired_steering_angle = 0.0L;
-        // controller design time parameters
+        // controller design time parameters	
+	period_s = {0.040, 0.025, 0.035, 0.040, 0.020, 0.030, 0.020, 0.020, 0.040}; 	//!< sampling period h in seconds for each scenario s_i
+	tau_s = {0.0379, 0.0206, 0.0303, 0.0373, 0.0164, 0.0299, 0.0198, 0.0160, 0.0359}; //!< sensor-to-actuator delay \tau in seconds for each scenario s_i
+	if (period_s.size() != tau_s.size())
+		throw range_error("In lateralControllerVREP, size of vectors period_s and tau_s should be the same");
         // Eigen::Matrix<typename Scalar, int RowsAtCompileTime, int ColsAtCompileTime>
         ///// VALUES ARE CONSIDERING ACTUATE DELAY //////////
         /////////////////////////////////////////////////////////////// v0 ////////////////////////////////////////////////////////////////////////////
@@ -274,10 +287,6 @@ public:
     // destructor
     ~lateralControllerVREP(){
     }
-    // class public methods
-    void compute_steering_angle(long double the_yL, int the_it_counter, int scenario);
-    long double get_steering_angle();
-    void estimate_next_state(int the_it_counter, int the_pipe_version);
 };
 
 #endif

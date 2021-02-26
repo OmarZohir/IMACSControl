@@ -2,12 +2,13 @@
 doc/doxygen_output
 externalApps
 out_imgs
-libtorch
 
 #files to ignore
 imacs_vrep
 imacs_webots
 
+#webots
+.wbproj
 # Prerequisites
 *.d
 

@@ -143,9 +143,10 @@ public:
 
     /**  @brief C++ implementation to calculate the current actual lateral deviation of the vehicle from the centre of the lane in webots.
          @param[in] gps          The webots GPS device (tag/id)
+         @param[in] world_encode The webots wbt file. 1: city_straight.wbt, 2: city.wbt
 	 @return the current lateral deviation (yL)
     */	
-    long double calculate_actual_deviation(GPS *gps);
+    long double calculate_actual_deviation(GPS *gps, int world_encode=1);
 
     /**  @brief C++ implementation to initialise the webots scene.
          @param[in] driver          The webots driver (id)

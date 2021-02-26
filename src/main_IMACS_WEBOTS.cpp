@@ -11,31 +11,32 @@ int main(int argc, char **argv)
 	using namespace std;
 	using namespace cv;
 	// ------- simulation parameters ----------//
-	unsigned int scenario; //!< the system scenario to simulate
-	unsigned int approximate_pipeline_version; //!< the approximate pipeline version to simulate. See IEEE Access paper. 0: no approximation
+	unsigned int scenario = 1; //!< the system scenario to simulate
+	unsigned int approximate_pipeline_version = 0; //!< the approximate pipeline version to simulate. See IEEE Access paper. 0: no approximation
 	long double yL = 0.0L, actual_yL = 0.0L;   //!< lateral deviation of the LKAS at the look-ahead distance and the actual yL
-	float initial_wait_time = 3; 	//!< initial simulation wait time to reach required speed
-	float sim_limit = 5; 		//!< simulation time limit in seconds
+	float initial_wait_time = 0.02; 	//!< initial simulation wait time to reach required speed
+	float sim_limit = 50; 		//!< simulation time limit in seconds
+	unsigned int world_encode = 2; 	//!< 1: city_straight.wbt, 2: city.wbt
 	Mat img_isp; 			//!< Matrix to store ISP image	
 	Mat img_webots;			//!< Matrix to store the image captured by webots	
-	long double steering_angle =0.0f, prev_steering_angle=0.0f,actuate_steering_angle=0.0f, steering_angle_x10p6=0.0f; //!< steering angle from lateral controller
+	long double steering_angle =0.0f, prev_steering_angle=0.0f,actuate_steering_angle=0.0f; //!< steering angle from lateral controller
 															   //!< previous steering angle. In case of pipelined controllers, we need an array of size equal to the number of pipes (atleast) to store all the previous steering angles
 															   //!< the steering angle to actuate at the current step
-															   //!< steering angle * 10^6 -> to deal with numerical precision
+	long int steering_angle_x10p6=0;	//!< steering angle * 10^6 -> to deal with numerical precision
 	//----- Reading parameters from the command line-----//
 	if (argc < 2)
 	{
-		cout << "[ERROR] Not enough input arguments\n Usage: ./imacs_webots <unsigned int scenario> [<unsigned int approximate pipeline version>]\n";
+		cout << "[ERROR] Not enough input arguments\n Usage: ./imacs_webots <unsigned int scenario> [<unsigned int world_encode>] [<unsigned int approximate pipeline version>]\n\t\tworld_encode= 1: city_straight (DEFAULT), 2: city.wbt";
 		return -1;
 	}
-	if (argc < 3)
+	if (argc >= 4)
 	{
-		approximate_pipeline_version = 0;
-	}
+		approximate_pipeline_version = atoi(argv[3]);
+	} 
 	if (argc >= 3)
 	{
-		approximate_pipeline_version = atoi(argv[2]);
-	} 
+		world_encode = atoi(argv[2]);
+	}
 
 	scenario = atoi(argv[1]);
 	cout << "[main webots] scenario: s" << scenario << "\tapproximate pipeline version: v"<< approximate_pipeline_version << endl;	
@@ -65,7 +66,6 @@ int main(int argc, char **argv)
 	int it_counter_period = 0;	//!< counts the kth instance of period
 	int it_counter_delay = 0;	//!< counts the kth instance of delay
 	bool first_actuate = 0;	 	//!< flag to check whether the first controller actutation is done in the webots simulation
-	unsigned int world_encode = 1; 		//!< 1: city_straight.wbt
 	
 	//--- Logging results to file ---//
 	//std::ofstream outfile1(paths.results+"/results_yL_steering_angle_Case0.csv", std::ios_base::app); /// appending results to a file --> std::ios_base::app
@@ -80,9 +80,9 @@ int main(int argc, char **argv)
 	while (driver->step() != -1 && driver->getTime() < initial_wait_time) //!< using "driver->getCurrentSpeed() < VEH_SPEED" condition does not work as initial few frames are not captured by camera and is black. Hence, simulating for initial_wait_time with steering angle = 0.
 	{
 		WebotsAPI.sim_actuate(driver,0);  //!< actuate the car with steering angle = 0
-		actual_yL=WebotsAPI.calculate_actual_deviation(WebotsAPI.gps);
+		actual_yL=WebotsAPI.calculate_actual_deviation(WebotsAPI.gps,world_encode);
 		outfile_yL << to_string(driver->getTime()) + "," + to_string(actual_yL) << endl;
-		cout << "[initialising cruising speed] t = " << driver->getTime() << "\tGPS speed =" << WebotsAPI.gps-> getSpeed() << "\t Current speed="<< driver->getCurrentSpeed() << endl;
+		cout << "[initialising cruising speed] t = " << driver->getTime() << "\tyL=" << actual_yL << "\t Current speed="<< driver->getCurrentSpeed() << endl; //WebotsAPI.gps-> getSpeed()
 	}
 
 	//--- Main loop for processing ---//
@@ -130,7 +130,7 @@ int main(int argc, char **argv)
 				// ------- Actuate -------------------//
 				/// (kind of) dealing with numerical precision issue with steering angle computed by the controller
 				steering_angle_x10p6 = prev_steering_angle*1000000;
-				actuate_steering_angle = (float)steering_angle_x10p6/1000000;
+				actuate_steering_angle = ((float)steering_angle_x10p6)/1000000;
 				WebotsAPI.sim_actuate(driver,actuate_steering_angle);					
 				cout << "[main_webots] Actuate t = " << driver->getTime() << ", steering angle = "<< actuate_steering_angle << "sec for Img = " << it_counter_delay-1 << endl;
 				first_actuate = 1;
@@ -144,7 +144,7 @@ int main(int argc, char **argv)
 			loop_count_delay--;
 		}
 		//---- Compute Actual yL ----//
-		actual_yL=WebotsAPI.calculate_actual_deviation(WebotsAPI.gps);
+		actual_yL=WebotsAPI.calculate_actual_deviation(WebotsAPI.gps,world_encode);
 		outfile_yL << to_string(driver->getTime()) + "," + to_string(actual_yL) << endl;
 	}
 	cout << "[main_webots] SUCCESS: Simulation Completed!!" << endl;

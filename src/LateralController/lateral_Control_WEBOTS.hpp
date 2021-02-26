@@ -7,7 +7,7 @@
 
 #define MAX_SCENARIOS 12 //!< maximum number of scenarios defined
 #define LENGTH_PHI_AUG 6 //!< length of the phi_aug matrix of the controller. 
-/// @brief Class for lateral controller.
+/// @brief Class for lateral controller in Webots
 class lateralControllerWEBOTS : lkasModel {
 private:
     /// member variables

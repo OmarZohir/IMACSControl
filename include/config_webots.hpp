@@ -21,9 +21,9 @@ using namespace std;
 #define DRAW_SLIDING_WINDOWS 1  //!< select whether to draw the sliding window while tracking
 #define WEBOTS_CAM 1            //!< select when VREP camera frames are used
 #define RE_DRAW_IMAGE 1        	//!< run re-draw image function
-//#define DEBUG 1		//!< print debug statements to check intermediary outputs. Results in slow simulation sometimes
+#define DEBUG 1		//!< print debug statements to check intermediary outputs. Results in slow simulation sometimes
 #define WEBOTS_YPIXEL_PER_METRE 112.72
-// ------------ for all pipeline version except VER:8 ---------//
+// ------------ If the settling value is not zero, WEBOTS_REF_TUNE needs to be modified ---------//
 //#define WEBOTS_REF_TUNE 3.355 // for 50kmph (city_straight_night_nostreet.wbt)
 //#define WEBOTS_REF_TUNE 3.255 // for 50kmph (city_straight_night_nostreet.wbt) // VER:3
 //#define WEBOTS_REF_TUNE 3.615 // for 50kmph (city_straight_night_nostreet.wbt) // VER:0
@@ -35,6 +35,7 @@ using namespace std;
 //#define WEBOTS_REF_TUNE 5.415 // for 50kmph (city_straight_night_nostreet.wbt)
 //#define WEBOTS_REF_TUNE 3.005 // for 50 kmph (city_straight_night.wbt, city_straight_dawn.wbt, city_straight_dusk.wbt)
 //#define WEBOTS_REF_TUNE 2.985 // for 50 kmph (city_straight.wbt)
+/// To differentiate between the straight road and left road (e.g.)
 #define WEBOTS_LEFT_THRESOLD 100
 #define WEBOTS_RIGHT_THRESOLD 400
 

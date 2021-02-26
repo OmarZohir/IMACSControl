@@ -176,11 +176,12 @@ double webotsAPI::getyL(string ref, double positionx , double positiony)
         typedef boost::geometry::model::d2::point_xy<double> point_type;
         typedef boost::geometry::model::linestring<point_type> linestring_type;
 #ifdef DEBUG
-        cout << "Entry: Read CSV" << endl;
+        cout << "[webotsAPI::getyL] Entry: Read CSV" << endl;
 #endif
    	vector<vector<double>> gold_ref = read_csv(ref);
 #ifdef DEBUG
-        cout << "Exit: Read CSV" << endl;
+        cout << "[webotsAPI::getyL] Exit: Read CSV" << endl;
+	cout << "[webotsAPI::getyL] GPS x=" << positionx << "\ty=" << positiony << endl;
 #endif
 
         point_type p(positionx, positiony);
@@ -198,22 +199,31 @@ double webotsAPI::getyL(string ref, double positionx , double positiony)
                 }
                 line.push_back(point_type(x,y));
 #ifdef DEBUG
-        	cout << "[webotsAPI::getyL] x= "<< x << " , y = " << y << "\n" ;
+        	//cout << "[webotsAPI::getyL] x= "<< x << " , y = " << y << "\n" ;
 #endif
     	}
 
-        double yl = boost::geometry::distance(p, line);
+        double yl = boost::geometry::distance(p, line); 
+	int yl_x10p3 = (yl*1000);  
+	yl = ((float)yl_x10p3)/1000;
 #ifdef DEBUG
         cout << "[webotsAPI::getyL] Point-Line: " << yl << endl;
-#endif        
+#endif      
 	return yl;
 }
 
 /// Function to calculate the current actual lateral deviation of the vehicle
-long double webotsAPI::calculate_actual_deviation(GPS *gps)
+long double webotsAPI::calculate_actual_deviation(GPS *gps, int world_encode)
 {
 	compute_gps_coords(gps);
-	long double actual_yL = getyL(gold_ref_csv, gps_coords[0], gps_coords[2]) - (ROAD_WIDTH/2) - FINE_TUNE; // As gold_ref is the middle of the entire road, not lane 
+	long double actual_yL;
+	if (world_encode==2) /// city.wbt
+		actual_yL = getyL(city_ref_csv, gps_coords[0], gps_coords[2]) - (ROAD_WIDTH/2) - FINE_TUNE; // As gold_ref is the middle of the entire road, not lane
+	else /// city_straight.wbt
+		actual_yL = getyL(gold_ref_csv, gps_coords[0], gps_coords[2]) - (ROAD_WIDTH/2) - FINE_TUNE;
+#ifdef DEBUG
+        cout << "[webotsAPI::calculate_actual_deviation] yL=" << actual_yL << endl;
+#endif 
 	return actual_yL;			
 }
 

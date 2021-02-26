@@ -47,17 +47,14 @@ int main(int argc, char **argv) {
 		return -1;
 	}
 	// ------- simulation parameters ----------//	
-	vector<float> period_s {0.040, 0.025, 0.035, 0.040, 0.020, 0.030, 0.020, 0.020, 0.040}; //!< sampling period h in seconds for each scenario s_i
-	vector<float> tau_s {0.0379, 0.0206, 0.0303, 0.0373, 0.0164, 0.0299, 0.0198, 0.0160, 0.0359}; //!< sensor-to-actuator delay \tau in seconds for each scenario s_i
-	
 	int scenario = atoi(argv[1]); //!< the system scenario to simulate
 	int approximate_pipeline_version = 0; //!< the approximate pipeline version to simulate. See IEEE Access paper. 0: no approximation
 	cout << "scenario: s" << scenario << "\tapproximate pipeline version: v"<< approximate_pipeline_version << endl;
 
 	float simstep = 0.005; //!< V-REP logical simulation step time in seconds
 	int simulation_time = 15; //!< Total logical simulation time in seconds
-	float wait_time = 0.015;//2.5; //!< Initial wait time in seconds. For actual simulation, this should be set such that the required velocity is reached by the car. Typically, 2.5 seconds.
-	if (argc == 3) {
+	float wait_time = 2.5;//2.5; //!< Initial wait time in seconds. For actual simulation, this should be set such that the required velocity is reached by the car. Typically, 2.5 seconds.
+	if (argc >= 3) {
 		simstep = stof(argv[2]);
 		cout << "simstep: "<< simstep << endl;
 	}
@@ -77,19 +74,26 @@ int main(int argc, char **argv) {
     	imageSignalProcessing ISP; //!< initialise ISP
     	laneDetection Lane_detection; //!< initialise lane detection
     	lateralControllerVREP Controller; //!< initialise lateral controller
+	pathsIMACS paths; 				//!< create an instance of pathsIMACS class and call the constructor
 
 	// --- delay 2.5 sec to reach desired velocity ---//		
 	time_step = wait_time / simstep; //!< The controller is designed for a constant speed. The set vehicle speed should be reached first in VREP.
 	cout << "\t\t\tinitialising... waiting for " << time_step << " simulation steps (to reach required vehicle speed)\n\t\t\t";
 	VrepAPI.sim_delay(time_step);
-	curr_period = period_s[scenario];
+	curr_period = Controller.period_s[scenario];
 	cout << "\n\t\t\tCompleted initialisation" << endl;
-
-	// ------- simulation main loop -------//
 	cout << "control period :" << curr_period << " sec" << endl;
-	cout << "control delay :" << tau_s[scenario] << " sec" << endl;
+	cout << "control delay :" << Controller.tau_s[scenario] << " sec" << endl;
 	cout << "simulation step :" << simstep << " sec" << endl;
-	
+
+	/// --- Logging results to file ---//
+	//std::ofstream outfile1(paths.results+"/results_yL_steering_angle_Case0.csv", std::ios_base::app); /// appending results to a file --> std::ios_base::app
+	std::ofstream outfile1(paths.results+"/results_vrep_yL.csv", std::ofstream::trunc); /// To erase the contents of the file and re-write --> std::ofstream::trunc
+	outfile1 << "simulation time,yL"<< endl;
+	std::ofstream outfile_df(paths.results+"/results_vrep_steering_angle.csv", std::ofstream::trunc); /// file to store steering angle
+	outfile_df << "simulation time,steering angle"<< endl;
+
+	/// ------- simulation main loop -------//
 	while(time < simulation_time - curr_period) { //!< simulate until the set simulation time
 		cout << "\nsimulation_time: " << time << "\t";
 		// ------- sensing ----------//	
@@ -100,7 +104,8 @@ int main(int argc, char **argv) {
 			
 		// ------- laneDetection -----------------//
 		yL = Lane_detection.lane_detection_pipeline(img_isp);
-		//cout << "lateral deviation: " << yL << endl;
+		//--- store to file----//
+		outfile1 << to_string(time) + "," + to_string(yL) << endl;
 		cout << "lateral deviation: " << yL;
 		
 		// ------- control_compute --------------//
@@ -111,21 +116,22 @@ int main(int argc, char **argv) {
 		Controller.estimate_next_state(it_counter, scenario);
 			
 		// ------- sensor-to-actuator delay ----------//
-		time_step = ceil(tau_s[scenario] / simstep);
+		time_step = ceil(Controller.tau_s[scenario] / simstep);
 			
 		VrepAPI.sim_delay(time_step);  
 		time += time_step*simstep;
 		// ----- actuating -----//
 		// [TODO] add actuation delay here (too small, neglected)
 		VrepAPI.sim_actuate(steering_angle); 
+		outfile_df << to_string(time) + "," + to_string(steering_angle) << endl;
 
 		// ------- remaining delay to sampling period ----------//
-		time_step = floor((period_s[scenario] - tau_s[scenario])/ simstep);
+		time_step = floor((Controller.period_s[scenario] - Controller.tau_s[scenario])/ simstep);
 		VrepAPI.sim_delay(time_step);  
 		time += time_step*simstep;
 
 		// ------- handle simulation time -------//
-		//time += period_s[scenario];
+		//time += Controller.period_s[scenario];
 		
 		it_counter++;
 	}
