@@ -119,7 +119,7 @@ SOURCES += \
 	$$IMACSROOT/src/LaneDetection/lane_detection_vrep.cpp \
 	$$IMACSROOT/src/LateralController/lateral_Control_VREP.cpp \  
     	$$IMACSROOT/src/LaneDetection/image_signal_processing.cpp \
-	$$IMACSROOT/src/cpp_vrep_api/utils.cpp \
+	#$$IMACSROOT/src/cpp_vrep_api/utils.cpp \
    	$$IMACSROOT/src/ReversiblePipeline/src/LoadCamModel.cpp \
     	$$IMACSROOT/src/ReversiblePipeline/src/MatrixOps.cpp \
     	$$VREP_PATH/programming/remoteApi/extApi.c \
@@ -131,8 +131,8 @@ HEADERS +=\
     	$$VREP_PATH/programming/remoteApi/extApiPlatform.h \
     	$$VREP_PATH/programming/include/shared_memory.h \
 	$$IMACSROOT/src/cpp_vrep_api/vrep_api.hpp \
-    	$$IMACSROOT/include/config_vrep.hpp \
-    	$$IMACSROOT/include/paths.hpp \
+    	$$IMACSROOT/src/config_vrep.hpp \
+    	$$IMACSROOT/src/paths.hpp \
 	$$IMACSROOT/src/LaneDetection/lane_detection_vrep.hpp \
     	$$IMACSROOT/src/LaneDetection/image_signal_processing.hpp \
     	$$IMACSROOT/src/LateralController/lateral_Control_VREP.hpp

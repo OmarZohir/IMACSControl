@@ -2,8 +2,6 @@
 #include <sstream>
 #include <iomanip>
 #include <fstream>
-//#include "config_vrep.hpp"
-
 
 std::string get_timestamp(){
     time_t now = time(0);

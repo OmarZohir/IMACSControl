@@ -28,7 +28,7 @@ void lateralControllerWEBOTS::compute_steering_angle(long double the_yL, int the
     // calculate the desired steering angle 
     m_desired_steering_angle = m_K2c[scenario] * zt_temp; 
 #ifdef DEBUG  
-    cout << " \tsteering angle: "<< m_desired_steering_angle<< endl;	
+    cout << "[lateralControllerWEBOTS::compute_steering_angle] \tsteering angle: "<< m_desired_steering_angle<< endl;	
 #endif          
 }
 

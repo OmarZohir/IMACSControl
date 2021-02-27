@@ -123,8 +123,8 @@ HEADERS +=\
 	$$IMACSROOT/src/LaneDetection/lane_detection_webots.hpp \
     	$$IMACSROOT/src/LaneDetection/image_signal_processing.hpp \
     	$$IMACSROOT/include/polyfit.hpp \
-    	$$IMACSROOT/include/config_webots.hpp \
-    	$$IMACSROOT/include/paths.hpp \
+    	$$IMACSROOT/src/config_webots.hpp \
+    	$$IMACSROOT/src/paths.hpp \
 	$$IMACSROOT/src/cpp_webots_api/webots_api.hpp
 
 unix:!symbian {

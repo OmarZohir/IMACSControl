@@ -12,22 +12,27 @@ do
 	then
 		exit 0
 	elif [[ $IMACS_OPTION -eq 1 ]] || [[ $IMACS_OPTION -eq 2 ]]
-	then		
-		echo "============================ STARTING COMPILATION ==============================="
-		if [ $IMACS_OPTION -eq 1 ]
-		then	
-			qmake imacs_webots_framework.pro
-		else
-			qmake imacs_vrep_framework.pro
-		fi
-		make
-		echo ""
-		echo "============================ COMPILATION COMPLETED =============================="
-		echo ""
-		echo "If there is a compilation error, quit this script, rectify the error and then rerun this bash script."
-		echo ""
+	then	
+		compiledFlag=0		
 		for (( ; ; ))
 		do
+			if [ $compiledFlag -eq 0 ]
+			then
+				echo "============================ STARTING COMPILATION ==============================="
+				if [ $IMACS_OPTION -eq 1 ]
+				then	
+					qmake imacs_webots_framework.pro
+				else
+					qmake imacs_vrep_framework.pro
+				fi
+				make
+				echo ""
+				echo "============================ COMPILATION COMPLETED =============================="
+				echo ""
+				echo "If there is a compilation error, quit this script, rectify the error and then rerun this bash script."
+				echo ""
+				compiledFlag=1
+			fi
 			echo "====================== Enter an option from the following: ======================"
 			echo "	0: QUIT."
 			if [ $IMACS_OPTION -eq 1 ]
@@ -45,7 +50,10 @@ do
 				echo "	4: KILLALL vrep scenes. The terminal needs to be manually closed though."
 			fi
 			echo "	5: OPEN live_plot for visualisation."
-			echo "	6: QUIT to IMACS WEBOTS/VREP option menu."
+			echo "	6: MAKE CLEAN and recompile."
+			echo "	7: GENERATE doxygen documentation."
+			echo "	8: CLEAN doxygen documentation."
+			echo "	9: QUIT to IMACS WEBOTS/VREP option menu."
 			echo -n "Option: "
 			read OPTION
 			if [ $OPTION -eq 0 ]
@@ -94,6 +102,16 @@ do
 			then				
 				gnome-terminal -- sh -c 'python live_plot.py; exec bash'
 			elif [ $OPTION -eq 6 ]
+			then
+				make clean
+				compiledFlag=0		
+			elif [ $OPTION -eq 7 ]
+			then
+				make doc		
+			elif [ $OPTION -eq 8 ]
+			then
+				make clean_doc			
+			elif [ $OPTION -eq 9 ]
 			then
 				break		
 			else

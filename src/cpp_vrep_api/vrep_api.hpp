@@ -4,6 +4,7 @@
 #include <Eigen/Eigen>
 #include <opencv2/opencv.hpp>
 #include "lkas_model.hpp"
+#include "utils.hpp"
 
 extern "C" {
     #include "extApi.h"

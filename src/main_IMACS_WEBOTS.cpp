@@ -15,7 +15,7 @@ int main(int argc, char **argv)
 	unsigned int approximate_pipeline_version = 0; //!< the approximate pipeline version to simulate. See IEEE Access paper. 0: no approximation
 	long double yL = 0.0L, actual_yL = 0.0L;   //!< lateral deviation of the LKAS at the look-ahead distance and the actual yL
 	float initial_wait_time = 3; 	//!< initial simulation wait time to reach required speed
-	float sim_limit = 50; 		//!< simulation time limit in seconds
+	float sim_limit = 100; 		//!< simulation time limit in seconds
 	unsigned int world_encode = 1; 	//!< 1: city_straight.wbt, 2: city.wbt
 	Mat img_isp; 			//!< Matrix to store ISP image	
 	Mat img_webots;			//!< Matrix to store the image captured by webots	
