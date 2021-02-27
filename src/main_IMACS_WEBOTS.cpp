@@ -16,7 +16,7 @@ int main(int argc, char **argv)
 	long double yL = 0.0L, actual_yL = 0.0L;   //!< lateral deviation of the LKAS at the look-ahead distance and the actual yL
 	float initial_wait_time = 3; 	//!< initial simulation wait time to reach required speed
 	float sim_limit = 100; 		//!< simulation time limit in seconds
-	unsigned int world_encode = 1; 	//!< 1: city_straight.wbt, 2: city.wbt
+	unsigned int world_encode = 1; 	//!< 1: city_straight.wbt, 2: city_straight_night.wbt
 	Mat img_isp; 			//!< Matrix to store ISP image	
 	Mat img_webots;			//!< Matrix to store the image captured by webots	
 	long double steering_angle =0.0f, prev_steering_angle=0.0f,actuate_steering_angle=0.0f; //!< steering angle from lateral controller
@@ -104,8 +104,7 @@ int main(int argc, char **argv)
 				img_isp = ISP.approximate_pipeline(img_webots, approximate_pipeline_version);
 				
 				// ------- laneDetection -----------------// 
-				//yL = Lane_detection.lane_detection_pipeline(img_isp, ret_reference, env);
-				yL = Lane_detection.lane_detection_pipeline(img_isp, world_encode, approximate_pipeline_version);
+				yL = Lane_detection.lane_detection_pipeline(img_isp, world_encode);
 				cout << "[main_webots] Perform Lane Detection: yL =" << yL << endl;
 				//--- store to file----//
 				outfile1 << to_string(driver->getTime()) + "," + to_string(yL) << endl;
