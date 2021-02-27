@@ -30,13 +30,7 @@
  *
  */
 
-
-#include <iostream>
-#include <cassert>  
-#include <opencv2/opencv.hpp>
 #include "vrep_api.hpp"
-#include "config_vrep.hpp"
-#include "paths.hpp"
 
 using namespace std;
 using namespace cv;

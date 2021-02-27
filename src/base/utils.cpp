@@ -2,8 +2,9 @@
 #include <sstream>
 #include <iomanip>
 #include <fstream>
+#include "utils.hpp"
 
-std::string get_timestamp(){
+std::string utils::get_timestamp(){
     time_t now = time(0);
     tm *ltm = localtime(&now);
     std::ostringstream oss;
@@ -24,7 +25,7 @@ std::string get_timestamp(){
     return timestamp;
 }
 
-std::string get_timestamp_filename(){
+std::string utils::get_timestamp_filename(){
     time_t now = time(0);
     tm *ltm = localtime(&now);
     std::ostringstream oss;
@@ -41,3 +42,4 @@ std::string get_timestamp_filename(){
     std::string timestamp = oss.str();   
     return timestamp;
 }
+

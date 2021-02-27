@@ -98,12 +98,13 @@ unix:!macx {
 
 INCLUDEPATH += "$$EIGEN_PATH"
 INCLUDEPATH += "$$IMACSROOT/src/cpp_webots_api"
-INCLUDEPATH += "$$IMACSROOT/include"
+INCLUDEPATH += "$$IMACSROOT/src/base"
 INCLUDEPATH += "$$IMACSROOT/include/auto_schedule"
 INCLUDEPATH += "$$HALIDE_PATH/include"
 INCLUDEPATH += "$$PKG_CONFIG_PATH"
 INCLUDEPATH += "$$HALIDE_PATH/tools"
 INCLUDEPATH += "$$IMACSROOT/src/ReversiblePipeline/src"
+INCLUDEPATH += "$$IMACSROOT/src"
 INCLUDEPATH += "$$IMACSROOT/src/LaneDetection"
 INCLUDEPATH += "$$IMACSROOT/src/LateralController"
 INCLUDEPATH += "$$IMACSROOT/src/Profiling/demosaic-profiling/src"
@@ -122,7 +123,6 @@ HEADERS +=\
     	$$IMACSROOT/src/LateralController/lateral_Control_WEBOTS.hpp \
 	$$IMACSROOT/src/LaneDetection/lane_detection_webots.hpp \
     	$$IMACSROOT/src/LaneDetection/image_signal_processing.hpp \
-    	$$IMACSROOT/include/polyfit.hpp \
     	$$IMACSROOT/src/config_webots.hpp \
     	$$IMACSROOT/src/paths.hpp \
 	$$IMACSROOT/src/cpp_webots_api/webots_api.hpp

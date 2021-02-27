@@ -103,7 +103,7 @@ INCLUDEPATH += "$$VREP_PATH/programming/include"
 INCLUDEPATH += "$$VREP_PATH/programming/remoteApi"
 INCLUDEPATH += "$$EIGEN_PATH"
 INCLUDEPATH += "$$IMACSROOT/src/cpp_vrep_api"
-INCLUDEPATH += "$$IMACSROOT/include"
+INCLUDEPATH += "$$IMACSROOT/src/base"
 INCLUDEPATH += "$$IMACSROOT/include/auto_schedule"
 INCLUDEPATH += "$$HALIDE_PATH/include"
 INCLUDEPATH += "$$PKG_CONFIG_PATH"
@@ -111,6 +111,7 @@ INCLUDEPATH += "$$HALIDE_PATH/tools"
 INCLUDEPATH += "$$IMACSROOT/src/ReversiblePipeline/src"
 INCLUDEPATH += "$$IMACSROOT/src/LaneDetection"
 INCLUDEPATH += "$$IMACSROOT/src/LateralController"
+INCLUDEPATH += "$$IMACSROOT/src"
 INCLUDEPATH += "$$IMACSROOT/src/Profiling/demosaic-profiling/src"
 
 SOURCES += \
@@ -119,9 +120,9 @@ SOURCES += \
 	$$IMACSROOT/src/LaneDetection/lane_detection_vrep.cpp \
 	$$IMACSROOT/src/LateralController/lateral_Control_VREP.cpp \  
     	$$IMACSROOT/src/LaneDetection/image_signal_processing.cpp \
-	#$$IMACSROOT/src/cpp_vrep_api/utils.cpp \
    	$$IMACSROOT/src/ReversiblePipeline/src/LoadCamModel.cpp \
     	$$IMACSROOT/src/ReversiblePipeline/src/MatrixOps.cpp \
+	$$IMACSROOT/src/base/utils.cpp \
     	$$VREP_PATH/programming/remoteApi/extApi.c \
     	$$VREP_PATH/programming/remoteApi/extApiPlatform.c \
     	$$VREP_PATH/programming/common/shared_memory.c
@@ -133,6 +134,7 @@ HEADERS +=\
 	$$IMACSROOT/src/cpp_vrep_api/vrep_api.hpp \
     	$$IMACSROOT/src/config_vrep.hpp \
     	$$IMACSROOT/src/paths.hpp \
+	$$IMACSROOT/src/base/utils.hpp \
 	$$IMACSROOT/src/LaneDetection/lane_detection_vrep.hpp \
     	$$IMACSROOT/src/LaneDetection/image_signal_processing.hpp \
     	$$IMACSROOT/src/LateralController/lateral_Control_VREP.hpp

@@ -53,7 +53,7 @@ do
 			echo "	6: MAKE CLEAN and recompile."
 			echo "	7: GENERATE doxygen documentation."
 			echo "	8: CLEAN doxygen documentation."
-			echo "	9: QUIT to IMACS WEBOTS/VREP option menu."
+			echo "	9: QUIT to IMACS WEBOTS/VREP option menu. To switch to other simulator."
 			echo -n "Option: "
 			read OPTION
 			if [ $OPTION -eq 0 ]

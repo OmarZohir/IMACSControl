@@ -1,16 +1,20 @@
 #ifndef CPP_VREP_API_VREP_API_H_
 #define CPP_VREP_API_VREP_API_H_
 
+#include <iostream>
+#include <cassert>  
 #include <Eigen/Eigen>
 #include <opencv2/opencv.hpp>
 #include "lkas_model.hpp"
+#include "paths.hpp"
+#include "config_vrep.hpp"
 #include "utils.hpp"
 
 extern "C" {
     #include "extApi.h"
 }
 
-class vrepAPI : lkasModel{
+class vrepAPI : lkasModel,utils {
 private:
     // private members
     int m_clientID, m_ping_time, m_cam, m_car, m_floor;
