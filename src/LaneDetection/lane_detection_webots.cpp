@@ -64,13 +64,19 @@ long double laneDetectionWEBOTS::lane_detection_pipeline(Mat src_in, int world_e
     	/// Perform sliding window lane tracking
     	vector<vector<Point>> lanes = sliding_window_lane_tracking(img_lanes);
 	
-#ifdef DEBUG
-	cout << "[DEBUG]\t[laneDetectionWEBOTS::lane_detection_pipeline] No. of lane-pixels: " << lanes[0].size() << " and " << lanes[1].size() << endl; 
+#ifdef DEBUGALL
+	cout << "\t[DEBUGALL]\t[laneDetectionWEBOTS::lane_detection_pipeline] No. of lane-pixels: " << lanes[0].size() << " and " << lanes[1].size() << endl; 
 #endif	
 	
+	if ((lanes[0].size() <=1) || (lanes[1].size() <=1) ) /// no lanes detected
+		throw out_of_range("[IMACS ERROR] No lanes detected in the camera image!\nMaybe the car went out of the lane.\nIf you believe everything else is correct, it could be that the Region-of-Interest need to be modified. You can change it in laneDetectionWEBOTS::get_bev_points().\nTo Debug this, use live_plot.py to see exactly where you are failing.");
+
 	/// Calculate lateral deviation
-	long double yL = calculate_lateral_deviation(lanes[0], lanes[1]);
-								  
+	long double yL=0;
+	if (world_encode == 2)
+		yL = calculate_lateral_deviation(lanes[0], lanes[1], WEBOTS_REF_TUNE_NIGHT);
+	else
+		yL = calculate_lateral_deviation(lanes[0], lanes[1], WEBOTS_REF_TUNE_STRAIGHT);								  
 
 #ifdef RE_DRAW_IMAGE
 	/// lane identification -> reverting back to original image
@@ -87,8 +93,8 @@ long double laneDetectionWEBOTS::lane_detection_pipeline(Mat src_in, int world_e
 	imwrite(lane_out_img_dir+"img_binary.png", img_lanes);
 #endif
 	
-#ifdef DEBUG
-	cout << "[DEBUG]\t[laneDetectionWEBOTS::lane_detection_pipeline] Lateral_deviation yL= " << yL << " m" << endl;
+#ifdef DEBUGALL
+	cout << "\t[DEBUG]\t[laneDetectionWEBOTS::lane_detection_pipeline] Lateral_deviation yL= " << yL << " m" << endl;
 #endif
 		
     	return yL;
@@ -134,8 +140,8 @@ vector<vector<Point2f>> laneDetectionWEBOTS::get_bev_points(int world_encode){
 	dst_vertices[2] = Point(462 - warp_offset, 512);
 	dst_vertices[3] = Point(50 + warp_offset, 512);
 #endif
-#ifdef DEBUG
-    cout << "[DEBUG]\t[laneDetectionWEBOTS::get_bev_points] source vertices = " << src_vertices << "\tdestination vertices = " << dst_vertices << endl;
+#ifdef DEBUGALL
+    cout << "\t[DEBUGALL]\t[laneDetectionWEBOTS::get_bev_points] source vertices = " << src_vertices << "\tdestination vertices = " << dst_vertices << endl;
 #endif
     	/// return result 
     	vertices[0] = src_vertices;
@@ -286,19 +292,19 @@ vector<vector<Point>> laneDetectionWEBOTS::sliding_window_lane_tracking(Mat& src
 	return lanes;
 }
 
-long double laneDetectionWEBOTS::calculate_lateral_deviation(vector<Point> left_lane_inds, vector<Point> right_lane_inds){
+long double laneDetectionWEBOTS::calculate_lateral_deviation(vector<Point> left_lane_inds, vector<Point> right_lane_inds,float ref_tune_hardcoded){
 	///  Extract left and right line pixel positions
 	vector<float> leftx(left_lane_inds.size()), lefty(left_lane_inds.size());
 	vector<float> rightx(right_lane_inds.size()), righty(right_lane_inds.size());
 
 	for (unsigned int i = 0; i < left_lane_inds.size(); ++i){
-	leftx[i] = left_lane_inds[i].x;
-	lefty[i] = left_lane_inds[i].y;
+		leftx[i] = left_lane_inds[i].x;
+		lefty[i] = left_lane_inds[i].y;
 	}
 	for (unsigned int i = 0; i < right_lane_inds.size(); ++i){
-	rightx[i] = right_lane_inds[i].x;
-	righty[i] = right_lane_inds[i].y;
-	}   
+		rightx[i] = right_lane_inds[i].x;
+		righty[i] = right_lane_inds[i].y;
+	}
 	/// Fit a second order polynomial to left and right lane positions
 	//vector<float> left_fit = mathalgo::polyfitparallel( lefty, leftx, 2 );
 	//vector<float> right_fit = mathalgo::polyfitparallel( righty, rightx, 2 );
@@ -323,15 +329,15 @@ long double laneDetectionWEBOTS::calculate_lateral_deviation(vector<Point> left_
     	vector<float> yL_rightx = mathalgo::polyval(right_fit, vec1);
 	
 #ifdef WEBOTS_CAM
-	if ((yL_leftx[0] > WEBOTS_LEFT_THRESOLD) && (yL_rightx[0] > WEBOTS_RIGHT_THRESOLD)) ref = x1d + (((x2d - x1d)/(x2 - x1))*(256 - x1)) - WEBOTS_REF_TUNE;
+	if ((yL_leftx[0] > WEBOTS_LEFT_THRESOLD) && (yL_rightx[0] > WEBOTS_RIGHT_THRESOLD)) ref = x1d + (((x2d - x1d)/(x2 - x1))*(256 - x1)) - ref_tune_hardcoded;
 	else ref = x1d + (((x2d - x1d)/(x2 - x1))*(256 - x1));
 #endif
 	
 	long double yL = (ref - (yL_leftx[0] + yL_rightx[0]) / 2) * scale;							
 	//yL[1] = (ref - (scale_leftx[0] + scale_rightx[0]) / 2) * scale;
 
-#ifdef DEBUG
-	cout << "[DEBUG]\t[laneDetectionWEBOTS::calculate_lateral_deviation] yL = " << yL << "\tRef = " << ref << endl;
+#ifdef DEBUGALL
+	cout << "\t[DEBUGALL]\t[laneDetectionWEBOTS::calculate_lateral_deviation] yL = " << yL << "\tRef = " << ref << endl;
 #endif
 
     	return yL; // in meters

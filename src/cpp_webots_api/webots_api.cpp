@@ -39,8 +39,8 @@ void webotsAPI::set_speed(Driver *driver, long double speed)
 	}
 	/// update and set vehicle speed to the requested speed
 	webotsAPI::speed = speed;
-#ifdef DEBUG
-	printf("setting speed to %Lf km/h\n", speed);
+#ifdef DEBUGALL
+	printf("\t[DEBUGALL]\t[webotsAPI::set_speed]setting speed to %Lf km/h\n", speed);
 #endif
 	driver->setCruisingSpeed(speed); /// wbu_driver_set_cruising_speed(kmh);
 }
@@ -59,8 +59,8 @@ void webotsAPI::compute_gps_speed(GPS *gps)
 	if (isnan(speed_ms)) /// if speed = NaN, set speed to 0.
 		speed_ms = 0.0;
 	gps_speed = speed_ms * 3.6;  		/// convert speed from m/s (default gps speed) to km/h
-#ifdef DEBUG
-	printf("		GPS speed:  %.1f km/h\n", gps_speed);
+#ifdef DEBUGALL
+	printf("\t[DEBUGALL]\t[webotsAPI::compute_gps_speed]		GPS speed:  %.1f km/h\n", gps_speed);
 #endif
 	compute_gps_coords(gps); /// whenever speed is computed, the gps coordinates are updated
 }
@@ -69,8 +69,8 @@ void webotsAPI::compute_gps_speed(GPS *gps)
 void webotsAPI::compute_gps_coords(GPS *gps)
 {
 	const double *coords = gps->getValues(); /// wb_gps_get_values(gps);
-#ifdef DEBUG
-	printf("		Positional vertices are: %f,%f,%f \n",coords[0],coords[1],coords[2]);
+#ifdef DEBUGALL
+	printf("\t[DEBUGALL]\t[webotsAPI::compute_gps_coords]		Positional vertices are: %f,%f,%f \n",coords[0],coords[1],coords[2]);
 #endif
 	memcpy(gps_coords, coords, sizeof(gps_coords));
 	positionx.push_back(coords[0]);
@@ -175,13 +175,13 @@ double webotsAPI::getyL(string ref, double positionx , double positiony)
 {
         typedef boost::geometry::model::d2::point_xy<double> point_type;
         typedef boost::geometry::model::linestring<point_type> linestring_type;
-#ifdef DEBUG
-        cout << "[webotsAPI::getyL] Entry: Read CSV" << endl;
+#ifdef DEBUGALL
+        cout << "\t[DEBUGALL]\t[webotsAPI::getyL] Entry: Read CSV" << endl;
 #endif
    	vector<vector<double>> gold_ref = read_csv(ref);
-#ifdef DEBUG
-        cout << "[webotsAPI::getyL] Exit: Read CSV" << endl;
-	cout << "[webotsAPI::getyL] GPS x=" << positionx << "\ty=" << positiony << endl;
+#ifdef DEBUGALL
+        cout << "\t[DEBUGALL]\t[webotsAPI::getyL] Exit: Read CSV" << endl;
+	cout << "\t[DEBUGALL]\t[webotsAPI::getyL] GPS x=" << positionx << "\ty=" << positiony << endl;
 #endif
 
         point_type p(positionx, positiony);
@@ -198,16 +198,17 @@ double webotsAPI::getyL(string ref, double positionx , double positiony)
 
                 }
                 line.push_back(point_type(x,y));
-#ifdef DEBUG
+#ifdef DEBUGALL
         	//cout << "[webotsAPI::getyL] x= "<< x << " , y = " << y << "\n" ;
 #endif
     	}
-
+	/// compute the Point-line
         double yl = boost::geometry::distance(p, line); 
+	/// numerical precision --> accuracy to 1 mm
 	int yl_x10p3 = (yl*1000);  
 	yl = ((float)yl_x10p3)/1000;
-#ifdef DEBUG
-        cout << "[webotsAPI::getyL] Point-Line: " << yl << endl;
+#ifdef DEBUGALL
+        cout << "\t[DEBUGALL]\t[webotsAPI::getyL] Point-Line: " << yl << endl;
 #endif      
 	return yl;
 }
@@ -217,13 +218,16 @@ long double webotsAPI::calculate_actual_deviation(GPS *gps, int world_encode)
 {
 	compute_gps_coords(gps);
 	long double actual_yL;
-	if (world_encode==2) /// city.wbt
-		actual_yL = getyL(city_ref_csv, gps_coords[0], gps_coords[2]) - (ROAD_WIDTH/2) - FINE_TUNE; // As gold_ref is the middle of the entire road, not lane
+	if (world_encode==3) /// city.wbt
+		actual_yL = getyL(city_ref_csv, gps_coords[0], gps_coords[2]) - (ROAD_WIDTH/2); //- FINE_TUNE; // As gold_ref is the middle of the entire road, not lane
 	else /// city_straight.wbt
-		actual_yL = getyL(gold_ref_csv, gps_coords[0], gps_coords[2]) - (ROAD_WIDTH/2) - FINE_TUNE;
-#ifdef DEBUG
-        cout << "[webotsAPI::calculate_actual_deviation] yL=" << actual_yL << endl;
-#endif 
+		actual_yL = getyL(gold_ref_csv, gps_coords[0], gps_coords[2]) - (ROAD_WIDTH/2);// - FINE_TUNE;
+#ifdef DEBUGALL
+        cout << "\t[DEBUGALL]\twebotsAPI::calculate_actual_deviation] yL=" << actual_yL << endl;
+#endif 	
+	/// numerical precision --> accuracy to 1 cm
+	int yL_x10p2 = (actual_yL*100);  
+	actual_yL = ((float)yL_x10p2)/100;
 	return actual_yL;			
 }
 

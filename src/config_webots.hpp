@@ -17,7 +17,7 @@ using namespace std;
 
 // ------------ defs -------------//
 #define TOP_SPEED 60 		//!< maximum speed
-#define VEH_SPEED 30 		//!< cruising speed
+#define VEH_SPEED 50 		//!< cruising speed
 #define DRAW_SLIDING_WINDOWS 1  //!< select whether to draw the sliding window while tracking
 #define WEBOTS_CAM 1            //!< select when VREP camera frames are used
 #define RE_DRAW_IMAGE 1        	//!< run re-draw image function
@@ -27,8 +27,8 @@ using namespace std;
 //#define WEBOTS_REF_TUNE 3.355 // for 50kmph (city_straight_night_nostreet.wbt)
 //#define WEBOTS_REF_TUNE 3.255 // for 50kmph (city_straight_night_nostreet.wbt) // VER:3
 //#define WEBOTS_REF_TUNE 3.615 // for 50kmph (city_straight_night_nostreet.wbt) // VER:0
-//#define WEBOTS_REF_TUNE 3.555 // for 50kmph (city_straight_night.wbt, city_straight_dawn.wbt)
-#define WEBOTS_REF_TUNE 3.615 // for 50kmph (city_straight.wbt, city_straight_dusk.wbt, city_straight_foggy.wbt)
+#define WEBOTS_REF_TUNE_NIGHT 3.555 // for 50kmph (city_straight_night.wbt, city_straight_dawn.wbt)
+#define WEBOTS_REF_TUNE_STRAIGHT 3.615 // for 50kmph (city_straight.wbt, city_straight_dusk.wbt, city_straight_foggy.wbt)
 //#define WEBOTS_REF_TUNE 15.615 // for 50kmph (city_straight_snow.wbt)
 //#define WEBOTS_REF_TUNE 30.815 // for 50kmph (city_straight_lqg.wbt)
 // ------------ for pipeline VER:8 ---------//

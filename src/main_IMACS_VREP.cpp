@@ -88,9 +88,9 @@ int main(int argc, char **argv) {
 
 	/// --- Logging results to file ---//
 	//std::ofstream outfile1(paths.results+"/results_yL_steering_angle_Case0.csv", std::ios_base::app); /// appending results to a file --> std::ios_base::app
-	std::ofstream outfile1(paths.results+"/results_vrep_yL.csv", std::ofstream::trunc); /// To erase the contents of the file and re-write --> std::ofstream::trunc
+	std::ofstream outfile1(paths.results+"/results_actual_yL.csv", std::ofstream::trunc); /// To erase the contents of the file and re-write --> std::ofstream::trunc
 	outfile1 << "simulation time,yL"<< endl;
-	std::ofstream outfile_df(paths.results+"/results_vrep_steering_angle.csv", std::ofstream::trunc); /// file to store steering angle
+	std::ofstream outfile_df(paths.results+"/results_steering_angle.csv", std::ofstream::trunc); /// file to store steering angle
 	outfile_df << "simulation time,steering angle"<< endl;
 
 	/// ------- simulation main loop -------//

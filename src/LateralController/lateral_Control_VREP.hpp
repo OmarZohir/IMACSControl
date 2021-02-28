@@ -11,24 +11,41 @@
 class lateralControllerVREP : lkasModel {
 private:
     // member variables
-    std::vector<long double> m_input = std::vector<long double> (400);
-    long double m_desired_steering_angle;
+    std::vector<long double> m_input = std::vector<long double> (400); /// the control input. Stored as a list (inefficient).[TO DO: convert from vector<long double> to long double for delay <= h]
+    long double m_desired_steering_angle; /// computed steering angle
 
     /// Controller matrices. Note that the Matrix dimensions need to be changed depending on the type of controller and controller implementation choice.
     std::vector< Eigen::Matrix<long double, LENGTH_PHI_AUG, LENGTH_PHI_AUG> > m_phi_aug
-                                        = std::vector< Eigen::Matrix<long double, LENGTH_PHI_AUG, LENGTH_PHI_AUG> > (MAX_SCENARIOS);
+                                        = std::vector< Eigen::Matrix<long double, LENGTH_PHI_AUG, LENGTH_PHI_AUG> > (MAX_SCENARIOS);  /// controller phi_aug matrices
     std::vector< Eigen::Matrix<long double, LENGTH_PHI_AUG, LENGTH_PHI_AUG> > m_T
-                                        = std::vector< Eigen::Matrix<long double, LENGTH_PHI_AUG, LENGTH_PHI_AUG> > (MAX_SCENARIOS);
+                                        = std::vector< Eigen::Matrix<long double, LENGTH_PHI_AUG, LENGTH_PHI_AUG> > (MAX_SCENARIOS);  /// controller T matrices from controllability decomposition function ctrbf()
     std::vector< Eigen::Matrix<long double, 1, (LENGTH_PHI_AUG-1)> > m_K2c
-                                        = std::vector< Eigen::Matrix<long double, 1, (LENGTH_PHI_AUG-1)> > (MAX_SCENARIOS);
+                                        = std::vector< Eigen::Matrix<long double, 1, (LENGTH_PHI_AUG-1)> > (MAX_SCENARIOS);  /// controller controllable gain matrices after controllability decomposition
     std::vector< Eigen::Matrix<long double, LENGTH_PHI_AUG, 1> > m_Gamma_aug
-                                        = std::vector< Eigen::Matrix<long double, LENGTH_PHI_AUG, 1> > (MAX_SCENARIOS);
+                                        = std::vector< Eigen::Matrix<long double, LENGTH_PHI_AUG, 1> > (MAX_SCENARIOS); /// controller Gamma_aug matrices
 public:
-    // class public methods
+
+    vector<float> period_s, tau_s; /// sampling period and sensor-to-actuator delay in seconds.
+
+    /**  @brief C++ implementation of the controller that computes the steering angle for the LKAS represented by the m_phi_aug and m_Gamma_aug matrices using the gain matrix m_K2c and the decomposition transformation matrix m_T
+         @param[in] the_yL           	Lateral Deviation at the look-ahead distance. Since the system is SISO, only one state is needed as input
+         @param[in] the_it_counter	The iteration counter that keeps track of the k-th instance
+	 @param[in] scenario		The scenario to simulate
+	 @note the function updates the class member m_desired_steering_angle
+      */
     void compute_steering_angle(long double the_yL, int the_it_counter, int scenario);
+
+    /**  @brief Function to access the steering angle from outside the class
+	 @return the m_desired_steering_angle.
+      */
     long double get_steering_angle();
-    void estimate_next_state(int the_it_counter, int the_pipe_version);
-    vector<float> period_s, tau_s;
+
+    /**  @brief C++ implementation of a simple estimator
+         @param[in] the_it_counter	The iteration counter that keeps track of the k-th instance
+	 @param[in] scenario		The scenario to simulate
+	 @note the function updates the m_input and (derived) states of the system m_zi
+      */
+    void estimate_next_state(int the_it_counter, int scenario);
     // constructor
     lateralControllerVREP() : lkasModel(0.135L, 0.42L, 2.2L, 0.55L, 0.21L){
         // initialize member variables

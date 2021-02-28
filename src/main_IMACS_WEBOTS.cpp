@@ -14,7 +14,7 @@ int main(int argc, char **argv)
 	unsigned int scenario = 1; //!< the system scenario to simulate
 	unsigned int approximate_pipeline_version = 0; //!< the approximate pipeline version to simulate. See IEEE Access paper. 0: no approximation
 	long double yL = 0.0L, actual_yL = 0.0L;   //!< lateral deviation of the LKAS at the look-ahead distance and the actual yL
-	float initial_wait_time = 3; 	//!< initial simulation wait time to reach required speed
+	float initial_wait_time = 3.5; 	//!< initial simulation wait time to reach required speed
 	float sim_limit = 100; 		//!< simulation time limit in seconds
 	unsigned int world_encode = 1; 	//!< 1: city_straight.wbt, 2: city_straight_night.wbt
 	Mat img_isp; 			//!< Matrix to store ISP image	
@@ -98,14 +98,14 @@ int main(int argc, char **argv)
 				camera_front_image = WebotsAPI.camera_front->getImage(); //wb_camera_get_image(camera_front);
 				UNUSED(camera_front_image);
 				img_webots = WebotsAPI.webots_img_2_Mat(WebotsAPI.camera_front, camera_front_image);				
-				cout << "[main_webots] Capture Image: t = " << driver->getTime() << " sec, Img = " << it_counter_period << endl;
+				cout << "[main_webots] Capture Image: t = " << driver->getTime() << " sec, Img = " << it_counter_period << ", actual deviation yL = " << actual_yL <<endl;
 
 				// ------- imageSignalProcessing ----------//
 				img_isp = ISP.approximate_pipeline(img_webots, approximate_pipeline_version);
 				
 				// ------- laneDetection -----------------// 
 				yL = Lane_detection.lane_detection_pipeline(img_isp, world_encode);
-				cout << "[main_webots] Perform Lane Detection: yL =" << yL << endl;
+				cout << "[main_webots] \tSensing & Processing Task: Perform Lane Detection, yL at look-ahead distance =" << yL << endl;
 				//--- store to file----//
 				outfile1 << to_string(driver->getTime()) + "," + to_string(yL) << endl;
 				
@@ -114,7 +114,7 @@ int main(int argc, char **argv)
 				Controller.compute_steering_angle(yL,it_counter_period,scenario);
 				steering_angle = Controller.get_steering_angle();
 				Controller.estimate_next_state(it_counter_period,scenario);
-				cout << "[main_webots] Compute Control: steering angle computed for Img " << it_counter_period << " is df = " << steering_angle << endl;
+				cout << "[main_webots] \t\tControl Computation Task : steering angle computed for Img " << it_counter_period << " is df = " << steering_angle << endl;
 			}
 			it_counter_period++;
 			loop_count_period = period/driver->getBasicTimeStep() - 1;
@@ -131,7 +131,7 @@ int main(int argc, char **argv)
 				steering_angle_x10p6 = prev_steering_angle*1000000;
 				actuate_steering_angle = ((float)steering_angle_x10p6)/1000000;
 				WebotsAPI.sim_actuate(driver,actuate_steering_angle);					
-				cout << "[main_webots] Actuate t = " << driver->getTime() << ", steering angle = "<< actuate_steering_angle << "sec for Img = " << it_counter_delay-1 << endl;
+				cout << "[main_webots] \t\t\tActuation Task: actuate at t = " << driver->getTime() << ", steering angle = "<< actuate_steering_angle << "sec for Img = " << it_counter_delay-1 << endl;
 				first_actuate = 1;
 				outfile_df << to_string(driver->getTime()) + "," + to_string(actuate_steering_angle) << endl;
 			}

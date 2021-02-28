@@ -49,10 +49,11 @@ private:
          @description From the given lane points, polyfits the lanes and then finds the deviation of the car from the centre of the lane at the look-ahead distance
          @param[in] 	left_lane_inds            left lane (points)
          @param[in] 	right_lane_inds           right lane (points)
+         @param[in] 	ref_tune_hardcoded        hardcoded tuning parameter obtained from trial and error
 	 @return lateral deviation of the vehicle with the current heading at the look-ahead distance
       */
     long double calculate_lateral_deviation(std::vector<cv::Point> left_lane_inds,
-                                        std::vector<cv::Point> right_lane_inds);
+                                        std::vector<cv::Point> right_lane_inds, float ref_tune_hardcoded);
 
     /**  @brief C++ implementation to overlay the detected lanes onto the original image
          @description 

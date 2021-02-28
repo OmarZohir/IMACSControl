@@ -121,8 +121,10 @@ long double laneDetection::lane_detection_pipeline(Mat src_in){
     } else {
         imwrite(out_string+"/img_thresholding.png", img_thresholding);
     }
-    imwrite(out_string+"/img_lanes.png", img_lanes_temp);
+    imwrite(out_string+"/img_binary.png", img_lanes_temp);
 
+    if ((lanes[0].size() <=1) || (lanes[1].size() <=1) ) /// no lanes detected
+		throw out_of_range("[IMACS ERROR] No lanes detected in the camera image!\nMaybe the car went out of the lane.\nIf you believe everything else is correct, it could be that the Region-of-Interest need to be modified. You can change it in laneDetectionWEBOTS::get_bev_points().\nTo Debug this, use live_plot.py to see exactly where you are failing.");
     /// calculate lateral deviation
     vector<long double> yL;
     yL = calculate_lateral_deviation(lanes[0], lanes[1]);
