@@ -1,3 +1,6 @@
+/** @file lateral_Control_VREP.cpp
+ *  @brief The source file for lateral controller implementation when using IMACS framework with VREP simulator
+ */
 #include "lateral_Control_VREP.hpp"
 
 using namespace std;

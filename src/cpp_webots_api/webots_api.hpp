@@ -1,6 +1,5 @@
 /** @file webots_api.hpp
  *  @brief The header file for webots API
- *  @description
  */
 #ifndef CPP_WEBOTS_API_WEBOTS_API_H_
 #define CPP_WEBOTS_API_WEBOTS_API_H_
@@ -73,9 +72,9 @@ public:
     double offset_value = 100.0; //!< offset value for 90 degree turns.
     double steering_angle = 0.0; //!< vehicle steering angle to actuate
 
-    /* misc variables */
-    double speed = 0.0;		/// vehicle speed
-    int image_quality = 100;	/// image quality is set as 100 (highest quality possible). 
+    /// Speed and image quality (if implementing compression)
+    double speed = 0.0;		//!< vehicle speed
+    int image_quality = 100;	//!< image quality is set as 100 (highest quality possible). 
 
     /**  @brief C++ implementation for converting webots camera image to Matrix. From RGB to BGR.
          @param[in] camera          The camera device (tag/id)

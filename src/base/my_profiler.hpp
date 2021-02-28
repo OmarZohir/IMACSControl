@@ -1,3 +1,6 @@
+/** @file my_profiler.hpp
+ *  @brief The header file to benchmark the profiling results
+ */
 #include <vector>
 #include <numeric>
 #include <algorithm> 
@@ -5,6 +8,7 @@
 #include "halide_benchmark.h"
 //#include "Profiler.h"
 
+/// @brief function to get normal distribution tuple (mean and standard deviation)
 std::vector<double> get_normal_dist_tuple(std::vector<double> v){
     double sum = std::accumulate(v.begin(), v.end(), 0.0);
     double mean = sum / v.size();
@@ -17,6 +21,7 @@ std::vector<double> get_normal_dist_tuple(std::vector<double> v){
     return {mean, stdev};
 }
 
+/// @brief profiling function to do benchmarking
 std::vector<std::vector<double>> do_benchmarking(std::function<void()> op){
 
     std::vector<double> iterations;

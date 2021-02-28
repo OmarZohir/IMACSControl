@@ -1,6 +1,5 @@
 /** @file image_signal_processing.cpp
  *  @brief source file for ISP pipeline
- *  @description
  *
  *  Name            :   image_signal_processing.cpp
  *

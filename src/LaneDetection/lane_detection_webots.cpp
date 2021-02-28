@@ -1,4 +1,6 @@
-/*
+/** @file lane_detection_webots.cpp
+ *  @brief The source file for lane detection when using IMACS framework with WEBOTS simulator
+ 
  *  Copyright (c) 2020 sayandipde
  *  Eindhoven University of Technology
  *  Eindhoven, The Netherlands
@@ -14,6 +16,7 @@
  *
  *  History         :
  *      26-03-20    :   Initial version.
+ *	28-02-21    :   Adapted with template functions (Sajid)
  *
  *
  * Licensed under the Apache License, Version 2.0 (the "License");

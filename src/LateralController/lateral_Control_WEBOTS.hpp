@@ -1,3 +1,6 @@
+/** @file lateral_Control_WEBOTS.hpp
+ *  @brief The header file for lateral controller implementation when using IMACS framework with WEBOTS simulator
+ */
 #ifndef LANEDETECTION_LATERAL_CONTROL_WEBOTS_H_
 #define LANEDETECTION_LATERAL_CONTROL_WEBOTS_H_
 
@@ -23,7 +26,8 @@ private:
                                         = std::vector< Eigen::Matrix<long double, LENGTH_PHI_AUG, 1> > (MAX_SCENARIOS);  /// controller Gamma_aug matrices
 public:
 
-    vector<float> period_ms, tau_ms; /// sampling period and sensor-to-actuator delay in milliseconds
+    vector<float> period_ms; 	/// sampling period in milliseconds
+    vector<float> tau_ms; 	/// sensor-to-actuator delay in milliseconds
 
     /**  @brief C++ implementation of the controller that computes the steering angle for the LKAS represented by the m_phi_aug and m_Gamma_aug matrices using the gain matrix m_K2c
          @param[in] the_yL           	Lateral Deviation at the look-ahead distance. Since the system is SISO, only one state is needed as input
@@ -50,7 +54,7 @@ public:
             fill(m_input.begin(), m_input.end(), 0.0L); // m_input is the input of the last sampling period.
 
             period_ms={45.f, 25.f, 25.f, 45.f, 25.f, 25.f, 25.f, 25.f, 40.f, 25.f, 35.f, 40.f}; //!< sampling period h in ms for each scenario s_i
-            tau_ms={45.f, 25.f, 25.f, 45.f, 25.f, 25.f, 25.f, 25.f, 40.f, 25.f, 35.f, 40.f}; //!< sensor-to-actuator delay \tau in ms for each scenario s_i
+            tau_ms={45.f, 25.f, 25.f, 45.f, 25.f, 25.f, 25.f, 25.f, 40.f, 25.f, 35.f, 40.f}; //!< sensor-to-actuator delay in ms for each scenario s_i
 	    if (period_ms.size() != tau_ms.size())
 		throw range_error("In lateralControllerWEBOTS, size of vectors period_ms and tau_ms should be the same");
             /////////////////////////////////////////////////////////////// v0 ////////////////////////////////////////////////////////////////////////////

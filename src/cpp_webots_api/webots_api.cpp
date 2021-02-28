@@ -1,6 +1,5 @@
-/** @file main_IMACS_WEBOTS.cpp
- *  @brief The MAIN file for IMACS framework using WEBOTS simulator
- *  @description
+/** @file webots_api.cpp
+ *  @brief The source file for webots API ("extern controller") when using IMACS framework using WEBOTS simulator
  */
 #include "webots_api.hpp"
 

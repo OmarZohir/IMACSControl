@@ -1,4 +1,6 @@
-/*
+/** @file my_vrep_api.cpp
+ *  @brief The source file for VREP Remote API interface when using IMACS framework with VREP simulator
+ 
  *  Copyright (c) 2020 sayandipde
  *  Eindhoven University of Technology
  *  Eindhoven, The Netherlands

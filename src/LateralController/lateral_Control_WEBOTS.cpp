@@ -1,3 +1,6 @@
+/** @file lateral_Control_WEBOTS.cpp
+ *  @brief The source file for lateral controller implementation when using IMACS framework with WEBOTS simulator
+ */
 #include "lateral_Control_WEBOTS.hpp"
 
 using namespace std;

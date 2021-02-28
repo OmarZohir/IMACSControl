@@ -1,6 +1,5 @@
 /** @file image_signal_processing.hpp
  *  @brief header file for ISP pipeline
- *  @description
 */
 #ifndef LANEDETECTION_IMAGE_SIGNAL_PROCESSING_H_
 #define LANEDETECTION_IMAGE_SIGNAL_PROCESSING_H_
@@ -40,7 +39,7 @@
 class imageSignalProcessing : public pathsIMACS {
 private:
     /**  @brief C++ implementation of ISP pipeline
-         @description Computes the forward or reverse ISP pipeline based on the function parameter 'direction'.
+           Computes the forward or reverse ISP pipeline based on the function parameter 'direction'.
          		forward ISP: converts RAW image to compressed RGB image
          		reverse ISP: converts compressed image (typically obtained from simulator) to RAW format
          @param[in] direction            0: reverse pipeline, 1: forward ISP
@@ -80,7 +79,7 @@ public:
     /// destructor
     ~imageSignalProcessing();
     /**  @brief C++ implementation of approximate pipeline for IMACS
-         @description For the captured image from the simulator, does the reverse ISP to RAW image and then forward ISP based on the version.
+           For the captured image from the simulator, does the reverse ISP to RAW image and then forward ISP based on the version.
          forward ISP: converts RAW image to compressed RGB image
          reverse ISP: converts compressed image (typically obtained from simulator) to RAW format
          @note

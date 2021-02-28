@@ -1,21 +1,23 @@
-//
-// http://www.vilipetek.com/2013/10/17/polynomial-fitting-in-c-not-using-boost/
-//
+/** @file matrix.hpp
+ *  @brief header file for matrix operations
+ *  http://www.vilipetek.com/2013/10/17/polynomial-fitting-in-c-not-using-boost/
+*/
 #pragma once
 #include <vector>
 #include <tuple>
 #include <stdexcept>
 #include <algorithm>
 #include <iostream>
-
-namespace mathalgo
+/// @brief namespace to hold math algorithms
+namespace mathalgo 
 {
 	using namespace std;
-
+	/// @brief template class to hold matrix functions
 	template<class T>
-	class matrix
+	class matrix  
 	{
 	public:
+		/// constructor
 		matrix(unsigned int nRows, unsigned int nCols) : 
 			m_nRows( nRows ), 
 			m_nCols( nCols ), 
@@ -26,7 +28,11 @@ namespace mathalgo
 				throw range_error( "invalid matrix size" );
 			}
 		}
-
+	
+	    	/**  @brief C++ implementation to return identity matrix
+		     @param[in] nSize	Size of the identity matrix
+		     @return returns square identity matrix of size nSize
+	      	*/    
 		static matrix identity( unsigned int nSize )
 		{
 			matrix oResult( nSize, nSize );
@@ -38,6 +44,11 @@ namespace mathalgo
 			return oResult;
 		}
 
+		/** @brief return the (i,j)th element in the matrix
+		 *  @param[in] nRow	i: number of row
+		 *  @param[in] nCol	j: number of column
+		 *  @return	M(i,j)
+		 */ 
 		inline T& operator()(unsigned int nRow, unsigned int nCol)
 		{
 			if ( nRow >= m_nRows || nCol >= m_nCols )
@@ -48,6 +59,10 @@ namespace mathalgo
 			return m_oData[nCol+m_nCols*nRow];
 		}
 
+		/** @brief inline function to multiply two matrices
+		 *  @param[in] other	The second matrix to multiply
+		 *  @return the matrix product
+		 */
 		inline matrix operator*(matrix& other)
 		{
 			if ( m_nCols != other.m_nRows )
@@ -70,6 +85,7 @@ namespace mathalgo
 			return oResult;
 		}
 
+		/// @brief inline function to return the matrix transpose
 		inline matrix transpose()
 		{
 			matrix oResult( m_nCols, m_nRows );
@@ -83,21 +99,24 @@ namespace mathalgo
 			return oResult;
 		}
 
+		/// @brief inline function to return the matrix number of rows
 		inline unsigned int rows() 
 		{
 			return m_nRows;
 		}
 
+		/// @brief inline function to return the matrix number of columns
 		inline unsigned int cols() 
 		{
 			return m_nCols;
 		}
-
+		/// @brief inline function to return the matrix data
 		inline vector<T> data()
 		{
 			return m_oData;
 		}
-
+		
+	    	/// @brief C++ implementation to print the matrix  
 		void print()
 		{
 			for ( unsigned int r = 0; r < m_nRows; r++ )
@@ -111,9 +130,9 @@ namespace mathalgo
 		}
 
 	private:
-		std::vector<T> m_oData;
+		std::vector<T> m_oData; //!< matrix data in vector format
 
-		unsigned int m_nRows;
-		unsigned int m_nCols;
+		unsigned int m_nRows;	//!< number of rows in the matrix
+		unsigned int m_nCols;	//!< number of columns in the matrix
 	};
 };

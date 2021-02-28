@@ -1,8 +1,9 @@
+/** @file polyfit.hpp
+ *  @brief header file for polyfit function
+ *  http://www.vilipetek.com/2013/10/17/polynomial-fitting-in-c-not-using-boost/
+*/
 #ifndef POLYFIT_H_
 #define POLYFIT_H_
-//
-// http://www.vilipetek.com/2013/10/17/polynomial-fitting-in-c-not-using-boost/
-//
 //#pragma once
 #include <vector>
 #include "matrix.hpp"
@@ -10,24 +11,18 @@
 #include <Eigen/Core>
 #include <Eigen/QR>
 #include <stdio.h>
-
+/// @brief namespace to hold math algorithms
 namespace mathalgo
 {
-        /*
-                Finds the coefficients of a polynomial p(x) of degree n that fits the data,
-                p(x(i)) to y(i), in a least squares sense. The result p is a row vector of
-                length n+1 containing the polynomial coefficients in incremental powers.
-
-                param:
-                        oX				x axis values
-                        oY				y axis values
-                        nDegree			polynomial degree including the constant
-
-                return:
-                        coefficients of a polynomial starting at the constant coefficient and
+        /** @brief 	Finds the coefficients of a polynomial p(x) of degree n that fits the data,
+                	p(x(i)) to y(i), in a least squares sense. The result p is a row vector of
+                	length n+1 containing the polynomial coefficients in incremental powers.
+                @param[in]	oX		x axis values
+                @param[in]	oY		y axis values
+                @param[in]	nDegree		polynomial degree including the constant
+                @return coefficients of a polynomial starting at the constant coefficient and
                         ending with the coefficient of power to nDegree. C++0x-compatible
                         compilers make returning locally created vectors very efficient.
-
         */
         template<typename T>
         std::vector<T> polyfit( const std::vector<T>& oX, const std::vector<T>& oY, int nDegree )
@@ -42,13 +37,13 @@ namespace mathalgo
                 matrix<T> oXMatrix( nCount, nDegree );
                 matrix<T> oYMatrix( nCount, 1 );
 
-                // copy y matrix
+                /// copy y matrix
                 for ( size_t i = 0; i < nCount; i++ )
                 {
                         oYMatrix(i, 0) = oY[i];
                 }
 
-                // create the X matrix
+                /// create the X matrix
                 for ( size_t nRow = 0; nRow < nCount; nRow++ )
                 {
                         T nVal = 1.0f;
@@ -59,57 +54,65 @@ namespace mathalgo
                         }
                 }
 
-                // transpose X matrix
+                /// transpose X matrix
                 matrix<T> oXtMatrix( oXMatrix.transpose() );
-                // multiply transposed X matrix with X matrix
+                /// multiply transposed X matrix with X matrix
                 matrix<T> oXtXMatrix( oXtMatrix * oXMatrix );
-                // multiply transposed X matrix with Y matrix
+                /// multiply transposed X matrix with Y matrix
                 matrix<T> oXtYMatrix( oXtMatrix * oYMatrix );
 
                 Givens<T> oGivens;
                 oGivens.Decompose( oXtXMatrix );
                 matrix<T> oCoeff = oGivens.Solve( oXtYMatrix );
-                // copy the result to coeff
+                /// copy the result to coeff
                 return oCoeff.data();
         }
 
+	/** @brief 	Polyfit in parallel.
+			Finds the coefficients of a polynomial p(x) of degree n that fits the data,
+                	p(x(i)) to y(i), in a least squares sense. The result p is a row vector of
+                	length n+1 containing the polynomial coefficients in incremental powers.
+                @param[in]	xv		x axis values
+                @param[in]	yv		y axis values
+                @param[in]	order		polynomial degree including the constant
+                @return coefficients of a polynomial starting at the constant coefficient and
+                        ending with the coefficient of power to nDegree. C++0x-compatible
+                        compilers make returning locally created vectors very efficient.
+        */
         template<typename T>
         std::vector<T> polyfitparallel(const vector<T> &xv, const vector<T> &yv, int order)
-{
-        Eigen::initParallel();
-        Eigen::MatrixXf A = Eigen::MatrixXf::Ones(xv.size(), order + 1);
-        Eigen::VectorXf yv_mapped = Eigen::VectorXf::Map(&yv.front(), yv.size());
-        Eigen::VectorXf xv_mapped = Eigen::VectorXf::Map(&xv.front(), xv.size());
-        Eigen::VectorXf result;
-        //cout << xv.size() << endl;
+	{
+		Eigen::initParallel();
+		Eigen::MatrixXf A = Eigen::MatrixXf::Ones(xv.size(), order + 1);
+		Eigen::VectorXf yv_mapped = Eigen::VectorXf::Map(&yv.front(), yv.size());
+		Eigen::VectorXf xv_mapped = Eigen::VectorXf::Map(&xv.front(), xv.size());
+		Eigen::VectorXf result;
+		//cout << xv.size() << endl;
 
-        assert(xv.size() == yv.size());
-        assert(xv.size() >= order + 1); // Gives Error
+		assert(xv.size() == yv.size());
+		assert(xv.size() >= order + 1); // Gives Error
 
-        for (unsigned int j = 1; j < order + 1; j++)
-        {
-                A.col(j) = A.col(j-1).cwiseProduct(xv_mapped);
-        }
+		for (unsigned int j = 1; j < order + 1; j++)
+		{
+		        A.col(j) = A.col(j-1).cwiseProduct(xv_mapped);
+		}
 
-        result = A.householderQr().solve(yv_mapped);
-        vector<T> coeff;
-        coeff.resize(order + 1);
-        for (size_t i = 0; i < order + 1; i++)
-                coeff[i] = result[i];
+		result = A.householderQr().solve(yv_mapped);
+		vector<T> coeff;
+		coeff.resize(order + 1);
+		for (size_t i = 0; i < order + 1; i++)
+		        coeff[i] = result[i];
 
-        return coeff;
-}
+		return coeff;
+	}
 
-        /*
+        /** @brief
                 Calculates the value of a polynomial of degree n evaluated at x. The input
                 argument pCoeff is a vector of length n+1 whose elements are the coefficients
                 in incremental powers of the polynomial to be evaluated.
-
-                param:
-                        oCoeff			polynomial coefficients generated by polyfit() function
-                        oX				x axis values
-
-                return:
+             @param[in] oCoeff			polynomial coefficients generated by polyfit() function
+             @param[in] oX			x axis values
+             @return
                         Fitted Y values. C++0x-compatible compilers make returning locally
                         created vectors very efficient.
         */

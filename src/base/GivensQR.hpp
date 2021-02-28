@@ -1,15 +1,18 @@
-//
-// http://www.vilipetek.com/2013/10/17/polynomial-fitting-in-c-not-using-boost/
-//
+/** @file GivensQR.hpp
+ *  @brief header file for Givens QR functions
+ *  http://www.vilipetek.com/2013/10/17/polynomial-fitting-in-c-not-using-boost/
+*/
 #pragma once
 #include "matrix.hpp"
 #include <stdexcept>
 #include <math.h>
 #include <algorithm>
 
+/// @brief namespace to hold math algorithms
 namespace mathalgo
 {
 	using namespace std;
+	/// @brief template class Givens
 	template<typename T>
 	class Givens
 	{
@@ -18,11 +21,9 @@ namespace mathalgo
 		{
 		}
 
-		/*
-			Calculate the inverse of a matrix using the QR decomposition.
-
-			param:
-				A	matrix to inverse
+		/** @brief Calculate the inverse of a matrix using the QR decomposition.
+		 *  @param[in] oMatrix		matrix to inverse
+		 *  @return the matrix inverse
 		*/
 		const matrix<T> Inverse( matrix<T>& oMatrix )
 		{
@@ -34,9 +35,10 @@ namespace mathalgo
 			Decompose( oMatrix );
 			return Solve( oIdentity );
 		}
-
-		/*
-			Performs QR factorization using Givens rotations.
+		
+		/** @brief Performs QR factorization using Givens rotations.
+		 *  @param[in] oMatrix		input matrix to decompose
+		 *  @return the decomposed matrix
 		*/
 		void Decompose( matrix<T>& oMatrix )
 		{
@@ -69,10 +71,11 @@ namespace mathalgo
 			m_oQ = m_oQ.transpose();
 		}
 		
-		/*
-			Find the solution for a matrix.
+		/** @brief Find the solution for a matrix.
 			http://en.wikipedia.org/wiki/QR_decomposition#Using_for_solution_to_linear_inverse_problems
-		*/
+		 *  @param[in] oMatrix		input matrix to solve
+		 *  @return the solved matrix
+		 */
 		matrix<T> Solve( matrix<T>& oMatrix )
 		{
 			matrix<T> oQtM( m_oQ.transpose() * oMatrix );
@@ -90,22 +93,23 @@ namespace mathalgo
 
 			return oS;
 		}
-
+		/// @brief returns the Q matrix
 		const matrix<T>& GetQ()
 		{
 			return m_oQ;
 		}
-
+		/// @brief returns the R matrix
 		const matrix<T>& GetR()
 		{
 			return m_oR;
 		}
 
 	private:
-		/*
-			Givens rotation is a rotation in the plane spanned by two coordinates axes.
+		/** @brief Givens rotation is a rotation in the plane spanned by two coordinates axes.
 			http://en.wikipedia.org/wiki/Givens_rotation
-		*/
+		 *  @param[in] a	The first axis
+		 *  @param[in] b	The second axis
+		 */
 		void GivensRotation( T a, T b )
 		{
 			T t,s,c;
@@ -135,9 +139,10 @@ namespace mathalgo
 			m_oJ(1,0) = s; m_oJ(1,1) = c;
 		}
 
-		/*
-			Get the premultiplication of a given matrix 
-			by the Givens rotation.
+		/** @brief Get the premultiplication of a given matrix by the Givens rotation.
+		 *  @param[in,out]	oMatrix		The matrix
+		 *  @param[in] 		i		the i value
+		 *  @param[in] 		j		the j value
 		*/
 		void PreMultiplyGivens( matrix<T>& oMatrix, int i, int j )
 		{
@@ -152,6 +157,8 @@ namespace mathalgo
 		}
 
 	private:
-		matrix<T> m_oQ, m_oR, m_oJ;
+		matrix<T> m_oQ; //!< Q matrix
+		matrix<T> m_oR; //!< R matrix
+		matrix<T> m_oJ; //!< J matrix
 	};
 }

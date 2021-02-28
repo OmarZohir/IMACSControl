@@ -1,3 +1,6 @@
+/** @file config_vrep.hpp
+ *  @brief The configuration file for IMACS framework using VREP simulator
+ */
 #ifndef CONFIG_VREP_H_
 #define CONFIG_VREP_H_
 
@@ -15,12 +18,12 @@
 using namespace std;
 
 // ------------ defs -------------//
-    #define VREP_CAM 1               // select when VREP camera frames are used
-    #define SELECT_PERIOD 1
-    #define DRAW_SLIDING_WINDOWS 1   // select whether to draw the sliding window while tracking
-    #define RE_DRAW_IMAGE 1          // run re-draw image function
-
-// ------------ function declarations -------------//
+    #define VREP_CAM 1         		//!< select when VREP camera frames are used
+    #define SELECT_PERIOD 1		//!< select period (may be redundant due to scenario. [TO DO] check!)
+    #define DRAW_SLIDING_WINDOWS 1   	//!< select whether to draw the sliding window while tracking
+    #define RE_DRAW_IMAGE 1          	//!< run re-draw image function
+//#define DEBUG
+//#define DEBUGALL
 
 #endif
 

@@ -1,3 +1,6 @@
+/** @file lateral_Control_VREP.hpp
+ *  @brief The header file for lateral controller implementation when using IMACS framework with VREP simulator
+ */
 #ifndef LANEDETECTION_LATERAL_CONTROL_VREP_H_
 #define LANEDETECTION_LATERAL_CONTROL_VREP_H_
 
@@ -24,8 +27,8 @@ private:
     std::vector< Eigen::Matrix<long double, LENGTH_PHI_AUG, 1> > m_Gamma_aug
                                         = std::vector< Eigen::Matrix<long double, LENGTH_PHI_AUG, 1> > (MAX_SCENARIOS); /// controller Gamma_aug matrices
 public:
-
-    vector<float> period_s, tau_s; /// sampling period and sensor-to-actuator delay in seconds.
+    vector<float> period_s; 	/// sampling period in seconds
+    vector<float> tau_s; 	/// sensor-to-actuator delay in seconds
 
     /**  @brief C++ implementation of the controller that computes the steering angle for the LKAS represented by the m_phi_aug and m_Gamma_aug matrices using the gain matrix m_K2c and the decomposition transformation matrix m_T
          @param[in] the_yL           	Lateral Deviation at the look-ahead distance. Since the system is SISO, only one state is needed as input
@@ -53,7 +56,7 @@ public:
         m_desired_steering_angle = 0.0L;
         // controller design time parameters	
 	period_s = {0.040, 0.025, 0.035, 0.040, 0.020, 0.030, 0.020, 0.020, 0.040}; 	//!< sampling period h in seconds for each scenario s_i
-	tau_s = {0.0379, 0.0206, 0.0303, 0.0373, 0.0164, 0.0299, 0.0198, 0.0160, 0.0359}; //!< sensor-to-actuator delay \tau in seconds for each scenario s_i
+	tau_s = {0.0379, 0.0206, 0.0303, 0.0373, 0.0164, 0.0299, 0.0198, 0.0160, 0.0359}; //!< sensor-to-actuator delay in seconds for each scenario s_i
 	if (period_s.size() != tau_s.size())
 		throw range_error("In lateralControllerVREP, size of vectors period_s and tau_s should be the same");
         // Eigen::Matrix<typename Scalar, int RowsAtCompileTime, int ColsAtCompileTime>

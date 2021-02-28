@@ -1,4 +1,6 @@
-/*
+/** @file lane_detection_vrep.cpp
+ *  @brief The source file for lane detection when using IMACS framework with VREP simulator
+ 
  *  Copyright (c) 2020 sayandipde
  *  Eindhoven University of Technology
  *  Eindhoven, The Netherlands

@@ -1,4 +1,7 @@
-/*
+/** @file main_IMACS_VREP.cpp
+ *  @brief The MAIN file for IMACS framework using VREP (CoppeliaSim) simulator
+ *  @note We use the EDU version of CoppeliaSim. If you are not an academic user, you would have to obtain your own license.
+
  *  Copyright (c) 2020 sayandipde
  *  Eindhoven University of Technology
  *  Eindhoven, The Netherlands
@@ -53,7 +56,7 @@ int main(int argc, char **argv) {
 
 	float simstep = 0.005; //!< V-REP logical simulation step time in seconds
 	int simulation_time = 15; //!< Total logical simulation time in seconds
-	float wait_time = 0.015;//2.5; //!< Initial wait time in seconds. For actual simulation, this should be set such that the required velocity is reached by the car. Typically, 2.5 seconds.
+	float wait_time = 2.5;//2.5; //!< Initial wait time in seconds. For actual simulation, this should be set such that the required velocity is reached by the car. Typically, 2.5 seconds.
 	if (argc >= 3) {
 		simstep = stof(argv[2]);
 		cout << "simstep: "<< simstep << endl;

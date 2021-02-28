@@ -1,3 +1,6 @@
+/** @file utils.cpp
+ *  @brief source file for holding some utililty functions
+ */
 #include <ctime>
 #include <sstream>
 #include <iomanip>

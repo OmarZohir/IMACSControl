@@ -1,3 +1,6 @@
+/** @file vrep_api.hpp
+ *  @brief The header file for VREP Remote API interface when using IMACS framework with VREP simulator
+ */
 #ifndef CPP_VREP_API_VREP_API_H_
 #define CPP_VREP_API_VREP_API_H_
 
@@ -13,7 +16,7 @@
 extern "C" {
     #include "extApi.h"
 }
-
+/// @brief Class with vrepAPI utilities
 class vrepAPI : lkasModel,utils {
 private:
     // private members
