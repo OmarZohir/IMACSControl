@@ -7,7 +7,7 @@ bash imacs.sh
 ```
 Follow the instructions.
 
-## How to use IMACS
+## How to use IMACS? Validating your controller design
 1. The controller needs to be designed separately from this toolchain.  
 In the current framework, we use a lane keeping assist system (LKAS) example.  
 The controller for this is implemented in `src/lateralController/`.  
@@ -38,24 +38,20 @@ git config --global user.name "Your Name"
 It is better to create your own branch and commit to master branch when you have a working improvement.
 
 ## Run IMACS with a different scene
-If you want to change the VREP/WEBOTS scene to simulate, change it in `run_imacs_vrep.sh`/`run_imacs_webots.sh`.
+If you want to change the VREP/WEBOTS scene to simulate, follow the instructions in `imacs.sh`.
 
 ### Change a VREP scene
 1. Copy the scene (e.g. `*.ttt`) to `~/imacs/vrep_scenes` folder.
-2. In `run_imacs_vrep.sh`, change the line `gnome-terminal -- sh -c 'cd externalApps/vrep; ./coppeliaSim.sh ../../vrep_scenes/SmallBias_report.ttt; exec bash'` to the following
+2. In `imacs.sh`, add an additional option. The following line opens a new vrep scene from:
 ```
 gnome-terminal -- sh -c 'cd externalApps/vrep; ./coppeliaSim.sh ../../vrep_scenes/`*.ttt`; exec bash'
 
 ### Change a WEBOTS scene
 1. Copy the scene (e.g. `*.wbt`) to `~/imacs/webots_scenes` folder.
-2. In `run_imacs_webots.sh`, change the line `gnome-terminal -- sh -c 'cd webots_scenes; webots city_straight.wbt; exec bash'` to the following
+2. In `imacs.sh`, add an additional option. The following line opens a new webots scene from:
 ```
 gnome-terminal -- sh -c 'cd webots_scenes; webots `*.wbt`; exec bash'
 ```
-
-## Run IMACS with different scenario
-In `run_imacs_*.sh`, change the line `./imacs_* 1` to `./imacs_* <unsigned int scenario>`.
-Note that the `period_ms`, `tau_ms` and the controller matrices `m_phi`, `m_Gamma`, `m_T` and `m_K2c` in `src/lateralController/lateralControl*.hpp` for the corresponding `<scenario>` needs to be updated. Else, it will throw and error.
 
 
 

@@ -7,11 +7,19 @@ do
 	echo "	0: QUIT."
 	echo "	1: IMACS with WEBOTS."
 	echo "	2: IMACS with VREP."
+	echo "	3: GENERATE doxygen documentation."
 	echo -n "Option: "
 	read IMACS_OPTION
 	if [[ $IMACS_OPTION -eq 0 ]]
 	then
-		exit 0
+		exit 0	
+	elif [ $IMACS_OPTION -eq 3 ]
+	then
+		echo "make clean_doc"
+		make clean_doc
+		echo "make doc"
+		make doc
+		read -p "Enter to continue."
 	elif [[ $IMACS_OPTION -eq 1 ]] || [[ $IMACS_OPTION -eq 2 ]]
 	then	
 		compiledFlag=0
@@ -60,10 +68,8 @@ do
 				fi
 				echo "	5: OPEN live_plot for visualisation."
 				echo "	6: MAKE CLEAN and recompile."
-				echo "	7: GENERATE doxygen documentation."
-				echo "	8: (RE)COMPILE"
-				echo "	9: QUIT to IMACS WEBOTS/VREP option menu. To switch to other simulator."
-				echo "	10: CLEAN doxygen documentation."
+				echo "	7: (RE)COMPILE"
+				echo "	8: QUIT to IMACS WEBOTS/VREP option menu. To switch to other simulator."
 				echo -n "Option: "
 				read OPTION
 			fi #end [$skipOptions -eq 0]
@@ -144,22 +150,12 @@ do
 				make clean
 				compiledFlag=0		
 			elif [ $OPTION -eq 7 ]
-			then
-				echo "make doc"
-				read -p "Enter to continue."
-				make doc		
-			elif [ $OPTION -eq 8 ]
 			then		
 				compiledFlag=0	
-			elif [ $OPTION -eq 9 ]
+			elif [ $OPTION -eq 8 ]
 			then
-				break					
-			elif [ $OPTION -eq 10 ]
-			then
-				echo "make clean_doc"
-				read -p "Enter to continue."
-				make clean_doc		
-			else #$OPTION > 10
+				break		
+			else #$OPTION > 8
 				clear
 			fi #end $OPTION
 			clear
