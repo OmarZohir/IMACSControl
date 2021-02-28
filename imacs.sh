@@ -25,10 +25,13 @@ do
 				echo "============================ STARTING COMPILATION ==============================="
 				if [ $IMACS_OPTION -eq 1 ]
 				then	
+					echo "qmake imacs_webots_framework.pro"
 					qmake imacs_webots_framework.pro
 				else
+					echo "qmake imacs_vrep_framework.pro"
 					qmake imacs_vrep_framework.pro
 				fi
+				echo "make"
 				make
 				echo ""
 				echo "============================ COMPILATION COMPLETED =============================="
@@ -72,20 +75,21 @@ do
 				clear
 				echo -n "Enter scenario: "
 				read SCENARIO
-				if [ $webotsWorldEntered -eq 0 ]
-				then
-					echo -n "Enter the open/opened webots world (1: city_straight.wbt, 2: city_straight_night.wbt): "
-					read webotsWorld
-					webotsWorldEntered=1
-				fi
 				if [ $livePlot -eq 0 ]
 				then
+					echo "gnome-terminal -- sh -c 'python live_plot.py; exec bash'"
 					gnome-terminal -- sh -c 'python live_plot.py; exec bash'
 					livePlot=1
 				fi
 				echo "============================ STARTING SIMULATION ==============================="
 				if [ $IMACS_OPTION -eq 1 ]
 				then
+					if [ $webotsWorldEntered -eq 0 ]
+					then
+						echo -n "Enter the open/opened webots world (1: city_straight.wbt, 2: city_straight_night.wbt): "
+						read webotsWorld
+						webotsWorldEntered=1
+					fi
 					echo "./imacs_webots $SCENARIO $webotsWorld"
 					./imacs_webots $SCENARIO $webotsWorld
 				else
@@ -107,6 +111,7 @@ do
 				OPTION=1
 				skipOptions=1
 				webotsWorld=1
+				webotsWorldEntered=1
 				read -p "Enter after the scene is OPENED."
 			elif [ $OPTION -eq 3 ]
 			then
@@ -119,6 +124,7 @@ do
 				OPTION=1
 				skipOptions=1
 				webotsWorld=2
+				webotsWorldEntered=1
 				read -p "Enter after the scene is OPENED."
 			elif [ $OPTION -eq 4 ]
 			then
@@ -129,7 +135,8 @@ do
 					killall -9 coppeliaSim
 				fi
 			elif [ $OPTION -eq 5 ]
-			then				
+			then
+				echo "gnome-terminal -- sh -c 'python live_plot.py; exec bash'"				
 				gnome-terminal -- sh -c 'python live_plot.py; exec bash'
 				livePlot=1
 			elif [ $OPTION -eq 6 ]
@@ -138,6 +145,8 @@ do
 				compiledFlag=0		
 			elif [ $OPTION -eq 7 ]
 			then
+				echo "make doc"
+				read -p "Enter to continue."
 				make doc		
 			elif [ $OPTION -eq 8 ]
 			then		
@@ -147,6 +156,8 @@ do
 				break					
 			elif [ $OPTION -eq 10 ]
 			then
+				echo "make clean_doc"
+				read -p "Enter to continue."
 				make clean_doc		
 			else #$OPTION > 10
 				clear
