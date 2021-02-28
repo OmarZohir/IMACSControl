@@ -37,8 +37,20 @@ public:
     /// destructor
     ~vrepAPI();
     // public methods
+
+    /**  @brief C++ implementation for enforcing synchronous delay in VREP simulation
+	 @param[in] time_step 	The number of time steps to delay the simulation. The parameters are same as the previous state.
+      */
     void sim_delay(int time_step);
+
+    /**  @brief C++ implementation for capturing image frame from VREP in matrix format
+	 @return 	The image captured by the camera in VREP scene in Matrix format
+      */
     cv::Mat sim_sense();
+
+    /**  @brief C++ implementation for enforcing the steering angle in the vehicle in VREP simulation
+	 @param[in] steering_angle 	The steering angle of the steering wheel to apply
+      */
     void sim_actuate(long double steering_angle);
 };
 
