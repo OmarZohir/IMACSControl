@@ -44,7 +44,7 @@ using namespace std;
 
 #define FINE_TUNE 0.010652587064676618 //!< Fine tuning parameter to compute actual_yL
 #define ROAD_WIDTH 3.25 //!< The road width of the webots scene
-#define PIPELINES_NUM 11 // Extra pipelines : Case 3 being considered
+//#define PIPELINES_NUM 11 // Extra pipelines : Case 4 being considered
 
 #endif
 
