@@ -22,6 +22,7 @@ int main(int argc, char **argv)
 															   //!< previous steering angle. In case of pipelined controllers, we need an array of size equal to the number of pipes (atleast) to store all the previous steering angles
 															   //!< the steering angle to actuate at the current step
 	long int steering_angle_x10p6=0;	//!< steering angle * 10^6 -> to deal with numerical precision
+	queue<long double> prev_steering_angles;
 	/// ----- Reading parameters from the command line-----//
 	if (argc < 2)
 	{
@@ -59,8 +60,8 @@ int main(int argc, char **argv)
 
 	Driver *driver = new Driver(); 		//!< initialise Webots driver
 	WebotsAPI.initialise(driver,period);	//!< initialise Webots Simulator (devices, camera frame rate with period and vehicle speed with VEH_SPEED)
-
-	int loop_count_delay = delay/driver->getBasicTimeStep() - 1; 	//!< Keep track of delay during simulation. This is done to get the image at tau + h [first frame is skipped]
+	int tau_d = delay - (int)(delay/period)*period; 				// For every sensing task at time "t", there should be a corresponding actuate task at time "t+tau" for the pipelined case
+	int loop_count_delay = tau_d/driver->getBasicTimeStep() - 1; 	//!< Keep track of delay during simulation. This is done to get the image at tau + h [first frame is skipped]
 	int loop_count_period = period/driver->getBasicTimeStep() - 1;  //!< Keep track of period during simulation.
 	int it_counter_period = 0;	//!< counts the kth instance of period
 	int it_counter_delay = 0;	//!< counts the kth instance of delay
@@ -110,6 +111,7 @@ int main(int argc, char **argv)
 				
 				/// ------- control_compute --------------//
 				prev_steering_angle = steering_angle;// to make the actuation part use the old steering angle, only used for tau == period
+				prev_steering_angles.push(steering_angle);
 				Controller.compute_steering_angle(yL,it_counter_period,scenario);
 				steering_angle = Controller.get_steering_angle();
 				Controller.estimate_next_state(it_counter_period,scenario);
@@ -127,6 +129,10 @@ int main(int argc, char **argv)
 			{
 				/// ------- Actuate -------------------//
 				/// (kind of) dealing with numerical precision issue with steering angle computed by the controller
+				//steering_angle_x10p6 = prev_steering_angle*1000000;
+				prev_steering_angle = *prev_steering_angles.front();
+				prev_steering_angles.pop();
+				
 				steering_angle_x10p6 = prev_steering_angle*1000000;
 				actuate_steering_angle = ((float)steering_angle_x10p6)/1000000;
 				WebotsAPI.sim_actuate(driver,actuate_steering_angle);					

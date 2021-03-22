@@ -7,11 +7,10 @@
 #include <Eigen/Eigen>
 #include "lkas_model.hpp"
 #include "config_webots.hpp"
-// 1 pipeline, Case 1 -> 1 core, Case 2 -> 4 cores is most optimal
-//Case 1 and Case 2
-#define MAX_SCENARIOS 2 //!< maximum number of scenarios defined
-#define LENGTH_PHI_AUG 6 //!< length of the phi_aug matrix of the controller.
- 
+// 6 pipelines, 1 core per pipe
+//Case 3
+#define MAX_SCENARIOS 1 //!< maximum number of scenarios defined
+#define LENGTH_PHI_AUG 5+PIPELINES_NUM //!< length of the phi_aug matrix of the controller.
 /// @brief Class for lateral controller in Webots.
 class lateralControllerWEBOTS : lkasModel {
 private:
@@ -54,8 +53,8 @@ public:
             m_desired_steering_angle = 0.0L;
             fill(m_input.begin(), m_input.end(), 0.0L); // m_input is the input of the last sampling period.
 
-            period_ms={91.666f, 41.666f}; //!< sampling period h in ms for each scenario s_i
-            tau_ms={91.076f, 34.976f}; //!< sensor-to-actuator delay in ms for each scenario s_i
+            period_ms={16.6666f}; //!< sampling period h in ms for each scenario s_i
+            tau_ms={100.f}; //!< sensor-to-actuator delay in ms for each scenario s_i
 	    if (period_ms.size() != tau_ms.size())
 		throw range_error("In lateralControllerWEBOTS, size of vectors period_ms and tau_ms should be the same");
             /////////////////////////////////////////////////////////////// v0 ////////////////////////////////////////////////////////////////////////////
@@ -81,33 +80,6 @@ public:
 				-0.000005598770957,
 								0,
 								1;
-
-	 
-		/////////////////////////////////////////////////////////////// v1 ////////////////////////////////////////////////////////////////////////////
-    // Case2: 4 cores, 1 pipeline, Q = 5, R = 50
-		    m_phi_aug[1] <<   
-		   0.703017957798984,  -0.478801964465345,                   0,                   0,                   0,   1.369202444340811,
-			-0.016718631224821,   0.777111901135483,                   0,                   0,                   0,   0.949177643953602,
-			-0.032866793668895,  -0.202337134643361,   1.000000000000000,   0.578703703703704,   0.167448988340192,  -0.180303121005202,
-			0.000386639476080,  -0.036785292461409,                   0,   1.000000000000000,   0.578703703703704,  -0.024619015734803,
-                   0,                   0,                   0,                   0,   1.000000000000000,                   0,
-                   0,                   0,                   0,                   0,                   0,                   0;
-
-
-		
-		    m_K2c[1] <<
-		      0.013454968676390,  -0.285368431915854,  0.197646211556919,   0.712292671386341,   0.000000000000008,  -0.281130443359657;
-
-
-		    m_Gamma_aug[1] <<
-		       0.379212315991095,
-				0.209932519290928,
-				-0.005208722657924,
-				-0.000707939004428,
-								0,
-				1;
-
-
 	
     }
     // destructor
