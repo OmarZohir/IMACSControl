@@ -130,9 +130,9 @@ int main(int argc, char **argv)
 				/// ------- Actuate -------------------//
 				/// (kind of) dealing with numerical precision issue with steering angle computed by the controller
 				//steering_angle_x10p6 = prev_steering_angle*1000000;
-				prev_steering_angle = *prev_steering_angles.front();
+				prev_steering_angle = prev_steering_angles.front();
 				prev_steering_angles.pop();
-				
+
 				steering_angle_x10p6 = prev_steering_angle*1000000;
 				actuate_steering_angle = ((float)steering_angle_x10p6)/1000000;
 				WebotsAPI.sim_actuate(driver,actuate_steering_angle);					

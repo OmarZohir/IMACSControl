@@ -7,7 +7,7 @@
 using namespace std;
 using namespace Eigen;
 
-queue<long double> prev_steering_angles;
+//queue<long double> prev_steering_angles;
 
 // class methods
 void lateralControllerWEBOTS::compute_steering_angle(long double the_yL, int the_it_counter, int scenario) {
@@ -26,7 +26,7 @@ void lateralControllerWEBOTS::compute_steering_angle(long double the_yL, int the
                     m_z5;
 
         for(int i=PIPELINES_NUM; i>0; i--){
-            zt_temp(i,0) = 0;
+            zt_temp(i,0) = 0.0L;
         }
 
     } else {
@@ -58,26 +58,26 @@ void lateralControllerWEBOTS::estimate_next_state(int the_it_counter, int scenar
     /// transfer state vector
     Matrix<long double, LENGTH_PHI_AUG, 1> zkp_temp, zkp;  
     if (the_it_counter == 0){
-        zt_temp <<  m_z1,
+        zkp_temp <<  m_z1,
                     m_z2,
                     m_z3,
                     m_z4,
                     m_z5;
         
         for(int i=PIPELINES_NUM; i>0; i--){
-            zt_temp(i,0) = 0;
+            zkp_temp(i,0) = 0.0L;
         }
 
 
     } else {
-        zt_temp <<  m_z1,
+        zkp_temp <<  m_z1,
                     m_z2,
                     m_z3,
                     m_z4,
-                    m_z5,
+                    m_z5;
         
         for(int i=PIPELINES_NUM; i>0; i--){
-            zt_temp(i,0) = m_input[the_it_counter-i];
+            zkp_temp(i,0) = m_input[the_it_counter-i];
         }
 
     }
