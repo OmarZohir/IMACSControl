@@ -111,10 +111,10 @@ int main(int argc, char **argv)
 				
 				/// ------- control_compute --------------//
 				prev_steering_angle = steering_angle;// to make the actuation part use the old steering angle, only used for tau == period
-				prev_steering_angles.push(steering_angle);
 				Controller.compute_steering_angle(yL,it_counter_period,scenario);
 				steering_angle = Controller.get_steering_angle();
 				Controller.estimate_next_state(it_counter_period,scenario);
+				prev_steering_angles.push(steering_angle);
 				cout << "[main_webots] \t\tControl Computation Task : steering angle computed for Img " << it_counter_period << " is df = " << steering_angle << endl;
 			}
 			it_counter_period++;
