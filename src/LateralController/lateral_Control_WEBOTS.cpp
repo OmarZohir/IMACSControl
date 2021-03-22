@@ -19,25 +19,34 @@ void lateralControllerWEBOTS::compute_steering_angle(long double the_yL, int the
     
     Matrix<long double, LENGTH_PHI_AUG, 1> zt_temp, zt;       /// zt is the transferred state vector
     if (the_it_counter == 0){
-        zt_temp <<  m_z1,
-                    m_z2,
-                    m_z3,
-                    m_z4,
-                    m_z5;
+        //zt_temp <<  m_z1,m_z2,m_z3,m_z4,m_z5;
+        zt_temp[0] = m_z1;
+        zt_temp[1] = m_z2;
+        zt_temp[2] = m_z3;
+        zt_temp[3] = m_z4;
+        zt_temp[4] = m_z5;
+
+
 
         for(int i=PIPELINES_NUM; i>0; i--){
-            zt_temp(i,0) = 0.0L;
+            zt_temp[LENGTH_PHI_AUG-i] = 0.0L;
         }
 
     } else {
-        zt_temp <<  m_z1,
-                    m_z2,
-                    m_z3,
-                    m_z4,
-                    m_z5;
+        // zt_temp <<  m_z1,
+        //             m_z2,
+        //             m_z3,
+        //             m_z4,
+        //             m_z5;
+
+        zt_temp[0] = m_z1;
+        zt_temp[1] = m_z2;
+        zt_temp[2] = m_z3;
+        zt_temp[3] = m_z4;
+        zt_temp[4] = m_z5;
 
         for(int i=PIPELINES_NUM; i>0; i--){
-            zt_temp(i,0) = m_input[the_it_counter-i];
+            zt_temp[LENGTH_PHI_AUG-i] = m_input[the_it_counter-i];
         }
 
     }
@@ -58,26 +67,33 @@ void lateralControllerWEBOTS::estimate_next_state(int the_it_counter, int scenar
     /// transfer state vector
     Matrix<long double, LENGTH_PHI_AUG, 1> zkp_temp, zkp;  
     if (the_it_counter == 0){
-        zkp_temp <<  m_z1,
-                    m_z2,
-                    m_z3,
-                    m_z4,
-                    m_z5;
+        // zkp_temp <<  m_z1,
+                    // m_z2,
+                    // m_z3,
+                    // m_z4,
+                    // m_z5;
+
+        zkp_temp[0] = m_z1;
+        zkp_temp[1] = m_z2;
+        zkp_temp[2] = m_z3;
+        zkp_temp[3] = m_z4;
+        zkp_temp[4] = m_z5;
         
         for(int i=PIPELINES_NUM; i>0; i--){
-            zkp_temp(i,0) = 0.0L;
+            zkp_temp[LENGTH_PHI_AUG-i] = 0.0L;
         }
 
 
     } else {
-        zkp_temp <<  m_z1,
-                    m_z2,
-                    m_z3,
-                    m_z4,
-                    m_z5;
-        
+        zkp_temp[0] = m_z1;
+        zkp_temp[1] = m_z2;
+        zkp_temp[2] = m_z3;
+        zkp_temp[3] = m_z4;
+        zkp_temp[4] = m_z5;
+
         for(int i=PIPELINES_NUM; i>0; i--){
-            zkp_temp(i,0) = m_input[the_it_counter-i];
+            //state it_counter_i is the older state, and thus is set at the earlier state LENGTH_PHI_AUG-i 
+            zkp_temp[LENGTH_PHI_AUG-i] = m_input[the_it_counter-i];
         }
 
     }
