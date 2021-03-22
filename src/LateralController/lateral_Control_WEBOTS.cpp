@@ -46,7 +46,11 @@ void lateralControllerWEBOTS::compute_steering_angle(long double the_yL, int the
         zt_temp[4] = m_z5;
 
         for(int i=PIPELINES_NUM; i>0; i--){
-            zt_temp[LENGTH_PHI_AUG-i] = m_input[the_it_counter-i];
+            if (the_it_counter-i >= 0)
+                zt_temp[LENGTH_PHI_AUG-i] = m_input[the_it_counter-i];
+            else
+                zt_temp[LENGTH_PHI_AUG-i] = 0.0L;
+
         }
 
     }
@@ -93,7 +97,10 @@ void lateralControllerWEBOTS::estimate_next_state(int the_it_counter, int scenar
 
         for(int i=PIPELINES_NUM; i>0; i--){
             //state it_counter_i is the older state, and thus is set at the earlier state LENGTH_PHI_AUG-i 
-            zkp_temp[LENGTH_PHI_AUG-i] = m_input[the_it_counter-i];
+             if (the_it_counter-i >= 0)
+                zkp_temp[LENGTH_PHI_AUG-i] = m_input[the_it_counter-i];
+            else
+                zkp_temp[LENGTH_PHI_AUG-i] = 0.0L;
         }
 
     }
